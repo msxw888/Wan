@@ -28,10 +28,12 @@
     <string name="account">账户</string>
     <string name="password">密码</string>
     <string name="not_login">未登录</string>
-    <string name="goto_login">点击登录</string>
+    <string name="goto_login">点此登录</string>
     <string name="exit_app_tips">再按一次退出</string>
     <string name="accountOrPassword_empty">账户密码不能为空</string>
     <string name="login_suc">登陆成功</string>
     <string name="search_title">Search</string>
     <string name="login_please_login">请先登录</string>
+    <string name="search_not_empty">搜索关键字不能为空</string>
+    <string name="login_fail">登录失败，请检查账户名密码后重试</string>
 </resources>

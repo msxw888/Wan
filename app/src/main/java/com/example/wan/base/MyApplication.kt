@@ -1,13 +1,14 @@
 package com.example.wan.base
 
 import android.app.Application
+import com.example.wan.UI.Search.SearchViewModelFactory
 import com.example.wan.UI.account.AccountRepository
 import com.example.wan.UI.account.AccountViewModelFactory
+import com.example.wan.UI.like.LikeViewModelFactory
 import com.example.wan.UI.main.MainFragment
 import com.example.wan.UI.main.MainViewModelFactory
 import com.example.wan.repository.remote.RetrofitHelper
 import com.example.wan.repository.Repository
-import com.example.wan.repository.remote.API
 import com.example.wan.repository.remote.NetworkDataimpl
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -38,6 +39,8 @@ class MyApplication : Application(),KodeinAware {
         bind<NetworkDataimpl>() with singleton { NetworkDataimpl(instance()) }
         bind() from provider { AccountViewModelFactory(instance()) }
         bind<AccountRepository>() with singleton { AccountRepository(instance()) }
+        bind() from provider { SearchViewModelFactory(instance()) }
+        bind() from provider { LikeViewModelFactory(instance()) }
     }
 
     override fun onCreate() {

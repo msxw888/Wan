@@ -27,21 +27,6 @@ class MainViewModel(private val repository : NetworkDataimpl) : ViewModel() {
         repository.fetchbannerlist()
         bannerdata = repository.getbannerdata() as MutableLiveData<BannerResponse>
     }
-//    private val queryText = MutableLiveData<Int>()
-//    private val repoResult = Transformations.map(queryText) {
-//        repository.getHomeList(it)
-//    }
-//    val posts = Transformations.switchMap(repoResult, { it.pagedList })!!
-//    val networkState = Transformations.switchMap(repoResult, { it.networkState })!!
-//    val refreshState = Transformations.switchMap(repoResult, { it.refreshState })!!
-//
-//    fun refresh() {
-//        repoResult.value?.refresh?.invoke()
-//    }
-//
-//    fun retry() {
-//        val listing = repoResult?.value
-//        listing?.retry?.invoke()
-//    }
+
 
 }

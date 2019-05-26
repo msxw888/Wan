@@ -72,20 +72,19 @@ class RetrofitHelper {
             if ((requestUrl.contains(Constant.SAVE_USER_LOGIN_KEY)
                         || requestUrl.contains(Constant.SAVE_USER_REGISTER_KEY))) {
 
-
                 // 获取 全部 cookie
                 val cookies = response.headers(Constant.SET_COOKIE_KEY)
 
-                cookies?.let {
+                //判空，密码错误的时候没有cookie，解析的话会导致npl，activity闪退
+                if (cookies.isNotEmpty()){
                     // 解析 cookie
-                    val cookie = encodeCookie(it)
+                    val cookie = encodeCookie(cookies)
                     saveCookie(domain, cookie)
                 }
             }
             response
         }
     }
-
 
     // 设置 请求 cookie (自动登录)
     private fun initLoginIntercept(): Interceptor {

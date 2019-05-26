@@ -23,6 +23,7 @@ import com.example.wan.adapter.HomeAdapter
 import com.example.wan.base.Preference
 import com.example.wan.bean.BannerResponse
 import com.example.wan.bean.Datas
+import com.example.wan.context.UserContext
 import com.example.wan.toast
 import kotlinx.android.synthetic.main.layout_recycleview.*
 import kotlinx.coroutines.*
@@ -34,10 +35,6 @@ class MainFragment : Fragment() ,KodeinAware{
 
     private var currentIndex = 0
 
-    /**
-     * check login from SharedPreferences
-     */
-    private val isLogin: Boolean by Preference(Constant.LOGIN_KEY, false)
 
     /**
      * 依赖注入MainViewModelFactory
@@ -99,6 +96,7 @@ class MainFragment : Fragment() ,KodeinAware{
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
+        getdata()
         bindUI()
 //        initAdapter()
 //        initSwipeToRefresh()
@@ -130,7 +128,6 @@ class MainFragment : Fragment() ,KodeinAware{
 //    }
 
     private fun bindUI() {
-        getdata()
         recycle_main.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = madapter
@@ -215,7 +212,6 @@ class MainFragment : Fragment() ,KodeinAware{
      * 添加首页数据
      */
     fun addHomeData(articleList: List<Datas>) {
-
         // 如果为空的话，就直接 显示加载完毕
         if (articleList.isEmpty()) {
             madapter.loadMoreEnd()
@@ -259,7 +255,7 @@ class MainFragment : Fragment() ,KodeinAware{
             val data = datas[position]
             when (view.id) {
                 R.id.homeItemLike -> {
-                    if (isLogin) {
+                    if (UserContext.instance.isLogin) {
                         val collect = data.collect
                         data.collect = !collect
                         madapter.setData(position, data)

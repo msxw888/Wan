@@ -3,6 +3,7 @@ package com.example.wan.UI.account
 import androidx.lifecycle.MutableLiveData
 import com.example.wan.State.loginState
 import com.example.wan.base.Preference
+import com.example.wan.bean.BaseResponse
 import com.example.wan.loge
 import com.example.wan.bean.LoginResponse
 import com.example.wan.bean.RegisterResponse
@@ -33,25 +34,42 @@ class AccountRepository(private val network : RetrofitHelper) {
     var pwd: String? by Preference(Constant.PASSWORD_KEY, "")
 
 
-    fun login(username: String, password: String, mLoginData: MutableLiveData<loginState>) {
-        try {
-            network.getapi().loginWanAndroid(username, password).enqueue(object: Callback<LoginResponse> {
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    loge("login>>>>>>>>>>","fail")
-                }
+//    fun login(username: String, password: String, mLoginData: MutableLiveData<loginState>) {
+//        try {
+//            network.getapi().loginWanAndroid(username, password).enqueue(object: Callback<LoginResponse> {
+//                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+//                    loge("login>>>>>>>>>>","fail")
+//                }
+//
+//                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+//                    if (response.)
+//                }
+//            })
+//        } catch (e: Exception) {
+//            loge("login:","exception")
+//        }
+//    }
+    fun login(username: String, password: String, mLoginData: MutableLiveData<loginState>){
+        network.getapi().loginWanAndroid(username, password).enqueue(object: Callback<BaseResponse<LoginResponse>?> {
+            override fun onFailure(call: Call<BaseResponse<LoginResponse>?>, t: Throwable) {
+                loge("login>>>>>>>>>>","请求失败")
+            }
 
-                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                    mLoginData.value = loginState(username,true)
-                    isLogin = true
-                    user = username
-                    pwd = password
-
+            override fun onResponse(
+                call: Call<BaseResponse<LoginResponse>?>,
+                response: Response<BaseResponse<LoginResponse>?>
+            ) {
+                response.body()?.let {
+                    if (it.errorCode!=0){
+                        mLoginData.postValue(loginState(usern = "点此登录",state = false))
+                    }
+                    else if(it.errorCode==0){
+                        mLoginData.postValue(loginState(usern = it.data.username,state = true))
+                    }
                 }
-            })
-        } catch (e: Exception) {
-            loge("login:","exception")
-        }
-    }
+            }
+        })
+}
 
     fun register(
         username: String,

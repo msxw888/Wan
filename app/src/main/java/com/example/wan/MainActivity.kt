@@ -1,5 +1,6 @@
 package com.example.wan
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -13,6 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.ui.setupWithNavController
 import com.example.wan.State.loginState
 import com.example.wan.UI.Search.SearchActivity
 import com.example.wan.UI.account.AccountViewModel
@@ -23,6 +26,7 @@ import com.example.wan.UI.main.MainViewModel
 import com.example.wan.UI.main.MainViewModelFactory
 import com.example.wan.base.BaseActivity
 import com.example.wan.base.Preference
+import com.example.wan.context.UserContext
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_webview.*
 import kotlinx.android.synthetic.main.layout_content.*
@@ -51,10 +55,7 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     private lateinit var navigationname:TextView
 
-    /**
-     * check login from SharedPreferences
-     */
-    private val isLogin: Boolean by Preference(Constant.LOGIN_KEY, false)
+
     /**
      * local username
      */
@@ -74,8 +75,6 @@ class MainActivity : BaseActivity(), KodeinAware {
         return super.onCreateOptionsMenu(menu)
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //设置Toolbar标题
@@ -88,31 +87,30 @@ class MainActivity : BaseActivity(), KodeinAware {
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         //jetpack的navigation
-//        navController = Navigation.findNavController(this,R.id.nav_host_fragment)
-//        bottomNavigation.setupWithNavController(navController)
+        navController = Navigation.findNavController(this,R.id.nav_host_fragment)
+        bottomNavigation?.setupWithNavController(navController)
 //        setupActionBarWithNavController(this,navController)
 
         accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.content, MainFragment.newInstance())
-                .commitNow()
-        }
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.nav_host_fragment, MainFragment.newInstance())
+//                .commitNow()
+//        }
         initNavigation()
         initDrawerLayout()
     }
 
     private fun initNavigation() {
-        navigationname = nav_view.getHeaderView(0).findViewById<TextView>(R.id.mTvName)
+        navigationname = nav_view.getHeaderView(0).findViewById(R.id.mTvName)
         navigationname.run {
-            text = if (!isLogin) {
-                getString(R.string.goto_login)
-            } else {
+            text = if (UserContext.instance.isLogin) {
                 user
-//                getString(R.string.not_login)
+            } else {
+                getString(R.string.goto_login)
             }
             setOnClickListener {
-                if (!isLogin) {
+                if (!UserContext.instance.isLogin) {
                     Intent(this@MainActivity, LoginActivity::class.java).run {
                         startActivityForResult(this, Constant.MAIN_REQUEST_CODE)
                     }
@@ -128,14 +126,14 @@ class MainActivity : BaseActivity(), KodeinAware {
         nav_view.setNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_logout ->{
-                    Preference.clear()
+                    UserContext.instance.logoutSuccess()
                     mTvName.text = getString(R.string.goto_login)
-                    accountViewModel.mLoginData.value = loginState("点此登录",false)
+                    accountViewModel.mLoginData.value = loginState(getString(R.string.goto_login),false)
                     mainFragment?.refreshData()
+                    navController.navigate(R.id.mainFragment_dest)
                     toast("已退出登录")
                     true
                 }
-
                 else -> false
             }
         }
@@ -162,6 +160,10 @@ class MainActivity : BaseActivity(), KodeinAware {
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * loginactivity登陆成功后刷新Drawlayout信息
+     */
+    // TODO: 2019/5/25 需要修改为loginsuccess回调
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){

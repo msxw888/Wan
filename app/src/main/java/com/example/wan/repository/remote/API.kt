@@ -1,6 +1,7 @@
 package com.example.wan.repository.remote
 
 import com.example.wan.bean.*
+import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -46,14 +47,14 @@ interface API {
     fun loginWanAndroid(
         @Field("username") username: String,
         @Field("password") password: String
-    ): Call<LoginResponse>
+    ): Call<BaseResponse<LoginResponse>>
 
     /**
      * 注册
      * @param username username
      * @param password password
      * @param repassword repassword
-     * @return Deferred<LoginResponse>
+     * @return Call<LoginResponse>
      */
     @POST("/user/register")
     @FormUrlEncoded
@@ -66,20 +67,33 @@ interface API {
     /**
      * 获取自己收藏的文章列表
      * @param page page
-     * @return Deferred<HomeListResponse>
+     * @return Call<BaseResponse<HomeListResponse>>
      */
     @GET("/lg/collect/list/{page}/json")
     fun getLikeList(
         @Path("page") page: Int
-    ): Call<HomeListResponse>
+    ): Call<BaseResponse<HomeListResponse>>
 
     /**
      * 收藏文章
      * @param id id
-     * @return Deferred<HomeListResponse>
+     * @return Call<BaseResponse<HomeListResponse>>
      */
     @POST("/lg/collect/{id}/json")
     fun addCollectArticle(
         @Path("id") id: Int
-    ): Call<HomeListResponse>
+    ): Call<BaseResponse<HomeListResponse>>
+
+    /**
+     * 搜索
+     * @param page page
+     * @param k POST search key
+     * @return Call<BaseResponse<HomeListResponse>>
+     */
+    @POST("/article/query/{page}/json")
+    @FormUrlEncoded
+    fun getSearchList(
+        @Path("page") page: Int,
+        @Field("k") k: String
+    ): Call<BaseResponse<HomeListResponse>>
 }

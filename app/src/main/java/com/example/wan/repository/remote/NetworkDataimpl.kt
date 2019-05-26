@@ -3,7 +3,9 @@ package com.example.wan.repository.remote
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.wan.bean.*
+import com.example.wan.bean.BannerResponse
+import com.example.wan.bean.BaseResponse
+import com.example.wan.bean.HomeListResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,10 +17,10 @@ import retrofit2.Response
  * @Version：
  *
  */
-class NetworkDataimpl(private val network :RetrofitHelper) : NetworkData {
+class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
 
     private  val _downloadhomelist = MutableLiveData<BaseResponse<HomeListResponse>>()
-    private  val bannerlist = MutableLiveData<BannerResponse>()
+
 
     /**
      * 网络获取homelist
@@ -46,6 +48,8 @@ class NetworkDataimpl(private val network :RetrofitHelper) : NetworkData {
         return _downloadhomelist
     }
 
+
+    private  val bannerlist = MutableLiveData<BannerResponse>()
     /**
      * 网络获取banner
      */
@@ -72,6 +76,63 @@ class NetworkDataimpl(private val network :RetrofitHelper) : NetworkData {
         return bannerlist
     }
 
+    private val _downloadedSearch = MutableLiveData<BaseResponse<HomeListResponse>>()
+    val downloadedSearch: LiveData<BaseResponse<HomeListResponse>>
+        get() = _downloadedSearch
+
+    /**
+     *
+     */
+    fun getSearchList() :MutableLiveData<BaseResponse<HomeListResponse>> = _downloadedSearch
+
+
+    fun fetchSearch(page: Int, k: String,data: MutableLiveData<BaseResponse<HomeListResponse>>) {
+        try {
+            network.getapi().getSearchList(page, k).enqueue(object: Callback<BaseResponse<HomeListResponse>?> {
+                override fun onFailure(call: Call<BaseResponse<HomeListResponse>?>, t: Throwable) {
+
+                }
+
+                override fun onResponse(
+                    call: Call<BaseResponse<HomeListResponse>?>,
+                    response: Response<BaseResponse<HomeListResponse>?>
+                ) {
+//                    _downloadedSearch.postValue(response.body())
+                    data.postValue(response.body())
+                    Log.e("downfetchsearchlist:",_downloadedSearch.toString())
+                }
+            })
+
+        } catch (e:Exception) {
+
+        }
+    }
+
+    fun getCollectResponse(page: Int,data: MutableLiveData<BaseResponse<HomeListResponse>>) {
+        try {
+            network.getapi().getLikeList(page).enqueue(object: Callback<BaseResponse<HomeListResponse>?> {
+                override fun onFailure(call: Call<BaseResponse<HomeListResponse>?>, t: Throwable) {
+                    Log.e("like>>>>>>>>>","请求失败")
+                }
+
+                override fun onResponse(
+                    call: Call<BaseResponse<HomeListResponse>?>,
+                    response: Response<BaseResponse<HomeListResponse>?>
+                ) {
+                    if (response.body()?.errorCode !=0){
+                        Log.e("like>>>>>>>>>",response.body()?.errorMsg)
+                        data.postValue(response.body())
+                    }
+                    else if (response.body()?.errorCode==0){
+                        data.postValue(response.body())
+                    }
+                }
+            })
+        } catch (e: Exception) {
+
+        }
+
+    }
 
 
 }
