@@ -64,6 +64,8 @@ class AccountRepository(private val network : RetrofitHelper) {
                         mLoginData.postValue(loginState(usern = "点此登录",state = false))
                     }
                     else if(it.errorCode==0){
+                        user = username
+                        isLogin = true
                         mLoginData.postValue(loginState(usern = it.data.username,state = true))
                     }
                 }

@@ -96,4 +96,23 @@ interface API {
         @Path("page") page: Int,
         @Field("k") k: String
     ): Call<BaseResponse<HomeListResponse>>
+
+    /**
+     * 知识体系
+     * https://www.wanandroid.com/tree/json
+     */
+    @GET("/tree/json")
+    fun getTypeTreeList(): Call<BaseResponse<List<TopTreeRsp>>>
+
+    /**
+     * 知识体系下的文章
+     * https://www.wanandroid.com/article/list/0/json?cid=168
+     * @param page page
+     * @param cid cid
+     */
+    @GET("/article/list/{page}/json")
+    fun getTreeArticleList(
+        @Path("page") page: Int,
+        @Query("cid") cid: Int
+    ): Call<BaseResponse<TreeArticleRsp>>
 }

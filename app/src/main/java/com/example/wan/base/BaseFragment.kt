@@ -10,25 +10,21 @@ import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment() {
 
-//    protected lateinit var loadService: LoadService<*>
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initData()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.e("Fragment",javaClass.simpleName)
-
-        return super.onCreateView(inflater, container, savedInstanceState)
+        initView()
     }
 
-    open fun initData() {}
+    abstract fun initView()
+
+//    open fun initData() {}
 
     // 重新加载
-    open fun reLoad() {
-        initData()
-    }
+//    open fun reLoad() {
+//        initData()
+//    }
 
 }

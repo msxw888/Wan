@@ -3,7 +3,7 @@ package com.example.wan.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.wan.repository.remote.RetrofitHelper
-import com.example.wan.bean.Datas
+import com.example.wan.bean.Article
 
 /**
  * 文件描述：
@@ -35,11 +35,11 @@ class Repository private constructor(private val network :RetrofitHelper){
 //        }
 //    }
 
-    private val _data = MutableLiveData<List<Datas>>()
-    val data: LiveData<List<Datas>>
+    private val _data = MutableLiveData<List<Article>>()
+    val data: LiveData<List<Article>>
         get()= _data
 
-//    fun requestandgetHomeList(page: Int): MutableLiveData<List<Datas>> {
+//    fun requestandgetHomeList(page: Int): MutableLiveData<List<Article>> {
 //        network.getHomeList(page,object: Callback<BaseResponse> {
 //            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
 //                Log.e("请求失败","false")
@@ -54,12 +54,12 @@ class Repository private constructor(private val network :RetrofitHelper){
 //
 //    }
 //
-//    fun gethomeList(page: Int): LiveData<List<Datas>> {
+//    fun gethomeList(page: Int): LiveData<List<Article>> {
 //        requestandgetHomeList(page)
 //        return data
 //    }
 //
-//    fun getdefaulthomeList(): LiveData<List<Datas>> {
+//    fun getdefaulthomeList(): LiveData<List<Article>> {
 //        requestandgetHomeList(0)
 //        return data
 //    }

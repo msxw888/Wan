@@ -1,31 +1,26 @@
 package com.example.wan.UI.like
 
+import Constant
 import android.content.Intent
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
-
 import com.example.wan.R
-import com.example.wan.State.loginState
 import com.example.wan.UI.account.AccountViewModel
 import com.example.wan.UI.account.AccountViewModelFactory
 import com.example.wan.UI.account.LoginActivity
-import com.example.wan.UI.view.HorizontalRecyclerView
+import com.example.wan.UI.main.adapter.HomeAdapter
 import com.example.wan.UI.webview.WebViewActivity
-import com.example.wan.adapter.HomeAdapter
-import com.example.wan.adapter.SearchAdapter
 import com.example.wan.base.BaseFragment
-import com.example.wan.bean.Datas
+import com.example.wan.bean.Article
 import com.example.wan.context.UserContext
 import com.example.wan.toast
-import kotlinx.android.synthetic.main.layout_recycleview.*
 import kotlinx.android.synthetic.main.like_fragment.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -46,7 +41,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     private lateinit var accountViewModel : AccountViewModel
 
-    private var datas = mutableListOf<Datas>()
+    private var datas = mutableListOf<Article>()
 
     private val madapter by lazy {
         HomeAdapter(datas)
@@ -62,14 +57,22 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+//        initView()
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(LikeViewModel::class.java)
 
         accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
         // TODO: Use the ViewModel
-
         getcollectData()
-        initView()
+        initData()
+    }
 
+    override fun initView() {
         recycle_like.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = madapter
@@ -86,6 +89,9 @@ class LikeFragment : BaseFragment(), KodeinAware {
 //            setEmptyView(R.layout.fragment_home_empty)
         }
 
+    }
+
+    private fun initData() {
         viewModel.collectList.observe(this, Observer {
             if (it.errorCode==0){
                 addData(it.data.datas)
@@ -104,9 +110,6 @@ class LikeFragment : BaseFragment(), KodeinAware {
         swipe_refresh_like.setOnRefreshListener { refreshData() }
     }
 
-    fun initView() {
-
-    }
 
     private fun refreshData() {
         getcollectData()
@@ -117,6 +120,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
             viewModel.getCollectList()
         }
         else{
+            findNavController().navigate(R.id.mainFragment_dest)
             UserContext.instance.login(activity)
         }
     }
@@ -163,7 +167,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
     /**
      * 添加数据
      */
-    fun addData(articleList: List<Datas>) {
+    fun addData(articleList: List<Article>) {
         // 如果为空的话，就直接 显示加载完毕
         if (articleList.isEmpty()) {
             madapter.loadMoreEnd()

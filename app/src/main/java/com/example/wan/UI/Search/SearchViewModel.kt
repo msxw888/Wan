@@ -23,12 +23,6 @@ class SearchViewModel (private val repository : NetworkDataimpl) : ViewModel(){
         Log.e("fetchlist:",searchdata.value?.data?.datas.toString())
     }
 
-//    fun getSearchfirstList(page: Int = 0, k: String) {
-//        repository.fetchSearch(page,k,searchdata)
-//        searchdata = repository.getSearchList()
-
-//    }
-
 //    private val queryText = MutableLiveData<Int>()
 //    private val repoResult = Transformations.map(queryText) {
 //        repository.getHomeList(it)

@@ -1,6 +1,7 @@
 package com.example.wan.base
 
 import android.app.Application
+import com.example.wan.UI.Knowledgesys.KnowViewModelFactory
 import com.example.wan.UI.Search.SearchViewModelFactory
 import com.example.wan.UI.account.AccountRepository
 import com.example.wan.UI.account.AccountViewModelFactory
@@ -41,6 +42,7 @@ class MyApplication : Application(),KodeinAware {
         bind<AccountRepository>() with singleton { AccountRepository(instance()) }
         bind() from provider { SearchViewModelFactory(instance()) }
         bind() from provider { LikeViewModelFactory(instance()) }
+        bind() from provider { KnowViewModelFactory(instance()) }
     }
 
     override fun onCreate() {

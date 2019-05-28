@@ -7,13 +7,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wan.R
-import com.example.wan.UI.main.MainViewModel
-import com.example.wan.adapter.SearchAdapter
+import com.example.wan.UI.Search.adapter.SearchAdapter
 import com.example.wan.base.BaseActivity
-import com.example.wan.bean.Datas
+import com.example.wan.bean.Article
 import com.example.wan.toast
 import kotlinx.android.synthetic.main.activity_search.*
-import kotlinx.android.synthetic.main.layout_recycleview.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -35,7 +33,7 @@ class SearchActivity : BaseActivity(),KodeinAware {
      */
     private var searchKey: String? = null
 
-    private var searchDatas = mutableListOf<Datas>()
+    private var searchDatas = mutableListOf<Article>()
 
     private val searchAdapter : SearchAdapter by lazy {
         SearchAdapter(searchDatas)
@@ -138,7 +136,7 @@ class SearchActivity : BaseActivity(),KodeinAware {
     /**
      * 添加数据
      */
-    fun addsearchData(articleList: List<Datas>) {
+    fun addsearchData(articleList: List<Article>) {
 
         // 如果为空的话，就直接 显示加载完毕
         if (articleList.isEmpty()) {

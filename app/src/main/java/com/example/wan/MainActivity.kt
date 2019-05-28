@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
@@ -126,20 +127,21 @@ class MainActivity : BaseActivity(), KodeinAware {
         nav_view.setNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_logout ->{
-                    UserContext.instance.logoutSuccess()
-                    mTvName.text = getString(R.string.goto_login)
-                    accountViewModel.mLoginData.value = loginState(getString(R.string.goto_login),false)
-                    mainFragment?.refreshData()
-                    navController.navigate(R.id.mainFragment_dest)
-                    toast("已退出登录")
-                    true
+//                    if(UserContext.instance.isLogin) {
+                        UserContext.instance.logoutSuccess()
+                        mTvName.text = getString(R.string.goto_login)
+                        accountViewModel.mLoginData.value = loginState(getString(R.string.goto_login), false)
+                        mainFragment?.refreshData()
+                        navController.navigate(R.id.mainFragment_dest)
+                        toast("已退出登录")
+//                    }
+                        true
                 }
                 else -> false
             }
         }
         // 关闭侧边栏
         drawer.closeDrawers()
-        true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -163,7 +165,7 @@ class MainActivity : BaseActivity(), KodeinAware {
     /**
      * loginactivity登陆成功后刷新Drawlayout信息
      */
-    // TODO: 2019/5/25 需要修改为loginsuccess回调
+    // TODO: 2019/5/25 可修改为loginsuccess回调
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
@@ -189,6 +191,26 @@ class MainActivity : BaseActivity(), KodeinAware {
         } else {
             toast(getString(R.string.exit_app_tips))
             lastTime = currentTime
+        }
+    }
+
+    /**
+     * 暂不使用，暂时还是使用navcontrl
+     * 但是navcontrl的缺点是每次切换都是replace，需要重复请求数据，多消耗了流量
+     * 下面这个是使用hide
+     */
+    // 当前显示的 fragment
+    private lateinit var mCurrentFragment: Fragment
+    // 复用 fragment
+    private fun goTo(to: Fragment) {
+        if (mCurrentFragment != to) {
+            val transaction = supportFragmentManager.beginTransaction()
+            if (to.isAdded)
+                transaction.hide(mCurrentFragment).show(to)
+            else
+                transaction.hide(mCurrentFragment).add(R.id.content, to)
+            transaction.commit()
+            mCurrentFragment = to
         }
     }
 }

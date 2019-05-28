@@ -3,9 +3,8 @@ package com.example.wan.repository.remote
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.wan.bean.BannerResponse
-import com.example.wan.bean.BaseResponse
-import com.example.wan.bean.HomeListResponse
+import com.example.wan.bean.*
+import com.example.wan.loge
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -132,6 +131,52 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
 
         }
 
+    }
+
+    fun getTree(data: MutableLiveData<BaseResponse<List<TopTreeRsp>>>) {
+        try {
+            network.getapi().getTypeTreeList().enqueue(object: Callback<BaseResponse<List<TopTreeRsp>>?> {
+                override fun onFailure(call: Call<BaseResponse<List<TopTreeRsp>>?>, t: Throwable) {
+                    Log.e("type>>>>>>>>>","请求失败")
+
+                }
+                override fun onResponse(
+                    call: Call<BaseResponse<List<TopTreeRsp>>?>,
+                    response: Response<BaseResponse<List<TopTreeRsp>>?>
+                ) {
+                    if (response.body()?.errorCode !=0){
+                        Log.e("typeERROR>>>>>>>>>",response.body()?.errorMsg)
+                        data.postValue(response.body())
+                    }
+                    else if (response.body()?.errorCode==0){
+                        data.postValue(response.body())
+                    }
+                }
+            })
+        } catch (e: Exception) {
+
+        }
+    }
+
+    fun getArticle(page: Int, cid: Int, data: MutableLiveData<BaseResponse<TreeArticleRsp>>) {
+        network.getapi().getTreeArticleList(page, cid).enqueue(object: Callback<BaseResponse<TreeArticleRsp>?> {
+            override fun onFailure(call: Call<BaseResponse<TreeArticleRsp>?>, t: Throwable) {
+                Log.e("typearticle>>>>>>>>>","请求失败")
+            }
+
+            override fun onResponse(
+                call: Call<BaseResponse<TreeArticleRsp>?>,
+                response: Response<BaseResponse<TreeArticleRsp>?>
+            ) {
+                if (response.body()?.errorCode !=0){
+                    Log.e("type>>>>>>>>>",response.body()?.errorMsg)
+                    data.postValue(response.body())
+                }
+                else if (response.body()?.errorCode==0){
+                    data.postValue(response.body())
+                }
+            }
+        })
     }
 
 
