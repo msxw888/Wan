@@ -1,21 +1,19 @@
 package com.example.wan
 
-import android.app.Activity
+import Constant
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
 import com.example.wan.State.loginState
 import com.example.wan.UI.Search.SearchActivity
@@ -23,9 +21,10 @@ import com.example.wan.UI.account.AccountViewModel
 import com.example.wan.UI.account.AccountViewModelFactory
 import com.example.wan.UI.account.LoginActivity
 import com.example.wan.UI.main.MainFragment
-import com.example.wan.UI.main.MainViewModel
 import com.example.wan.UI.main.MainViewModelFactory
 import com.example.wan.base.BaseActivity
+import com.example.wan.base.KeepStateNavigator
+import com.example.wan.base.MyNav
 import com.example.wan.base.Preference
 import com.example.wan.context.UserContext
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,7 +39,7 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     private var lastTime: Long = 0
 
-    private lateinit var navController: NavController
+    private val navController: NavController by lazy { Navigation.findNavController(this,R.id.nav_host_fragment) }
 
     override val kodein by closestKodein()
     private val mainviewModelFactory: MainViewModelFactory by instance()
@@ -78,21 +77,37 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
+
         //设置Toolbar标题
         setToolBar(toolbar_main,getString(R.string.app_name))
 
-        //设置导航图标、按钮有旋转特效
+        //设置抽屉导航图标、按钮有旋转特效
         val toggle = ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
+
+
         //jetpack的navigation
-        navController = Navigation.findNavController(this,R.id.nav_host_fragment)
+//        navController = Navigation.findNavController(this,R.id.nav_host_fragment)
+//        navController.navigatorProvider
+
+        // get fragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
+        // setup custom navigator
+        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, R.id.nav_host_fragment)
+        navController.navigatorProvider += navigator
+        // set navigation graph
+        navController.setGraph(R.navigation.nav_graph)
+
         bottomNavigation?.setupWithNavController(navController)
 //        setupActionBarWithNavController(this,navController)
 
-        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
+
+
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
 //                .replace(R.id.nav_host_fragment, MainFragment.newInstance())

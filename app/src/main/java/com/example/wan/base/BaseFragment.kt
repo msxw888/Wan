@@ -14,13 +14,23 @@ abstract class BaseFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("Fragment",javaClass.simpleName)
+        Log.d("onViewCreated",javaClass.simpleName)
         initView()
     }
 
     abstract fun initView()
 
-//    open fun initData() {}
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("onCreated",javaClass.simpleName)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("onDetach",javaClass.simpleName)
+    }
+
+    //    open fun initData() {}
 
     // 重新加载
 //    open fun reLoad() {

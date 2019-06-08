@@ -3,6 +3,7 @@ package com.example.wan.UI.Knowledgesys
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,12 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
      */
     private var flag: Boolean = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this,knowviewModelFactory).get(KnowledgeViewModel::class.java)
+        initdata()
+    }
+
     // 获取 初始化 传入的 ids、titles
     private val titles: ArrayList<String>? by lazy { arguments?.getStringArrayList("titles") }
     private val ids: ArrayList<Int>? by lazy { arguments?.getIntegerArrayList("ids") }
@@ -75,8 +82,8 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this,knowviewModelFactory).get(KnowledgeViewModel::class.java)
-        initdata()
+
+
         dadaObserve()
     }
 

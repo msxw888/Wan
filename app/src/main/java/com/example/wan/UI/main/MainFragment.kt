@@ -95,11 +95,17 @@ class MainFragment : BaseFragment() ,KodeinAware{
         return mainView
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
+        getdata()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
+
 //        initUI()
-        getdata()
+
         initData()
 //        initAdapter()
 //        initSwipeToRefresh()
