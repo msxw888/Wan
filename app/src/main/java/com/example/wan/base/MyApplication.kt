@@ -1,13 +1,13 @@
 package com.example.wan.base
 
 import android.app.Application
-import com.example.wan.UI.Knowledgesys.KnowViewModelFactory
-import com.example.wan.UI.Search.SearchViewModelFactory
+import com.example.wan.UI.Knowledgesys.vm.KnowViewModelFactory
+import com.example.wan.UI.Search.vm.SearchViewModelFactory
 import com.example.wan.UI.account.AccountRepository
-import com.example.wan.UI.account.AccountViewModelFactory
-import com.example.wan.UI.like.LikeViewModelFactory
+import com.example.wan.UI.account.vm.AccountViewModelFactory
+import com.example.wan.UI.like.vm.LikeViewModelFactory
 import com.example.wan.UI.main.MainFragment
-import com.example.wan.UI.main.MainViewModelFactory
+import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.repository.remote.RetrofitHelper
 import com.example.wan.repository.Repository
 import com.example.wan.repository.remote.NetworkDataimpl

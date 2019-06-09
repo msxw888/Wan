@@ -1,4 +1,4 @@
-package com.example.wan.UI.Knowledgesys
+package com.example.wan.UI.Knowledgesys.vm
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

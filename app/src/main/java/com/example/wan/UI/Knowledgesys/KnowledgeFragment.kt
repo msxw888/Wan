@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 
 import com.example.wan.R
 import com.example.wan.UI.Knowledgesys.adapter.TopTreeAdapter
+import com.example.wan.UI.Knowledgesys.vm.KnowViewModelFactory
+import com.example.wan.UI.Knowledgesys.vm.KnowledgeViewModel
 import com.example.wan.base.BaseFragment
 import com.example.wan.bean.TopTreeRsp
 import kotlinx.android.synthetic.main.knowledge_fragment.*

@@ -38,19 +38,6 @@ class MyNav(
         navOptions: NavOptions?,
         navigatorExtras: Navigator.Extras?
     ): NavDestination? {
-        val tag = destination.id.toString()
-        var initialNavigate = false
-
-//
-//        transaction.setPrimaryNavigationFragment(fragment)
-//        transaction.setReorderingAllowed(true)
-//        transaction.commit()
-//
-//        return if (initialNavigate) {
-//            destination
-//        } else {
-//            null
-//        }
 
         if (manager.isStateSaved) {
             Log.i(TAG, "Ignoring navigate() call: FragmentManager has already" + " saved its state")
@@ -60,11 +47,16 @@ class MyNav(
         if (className[0] == '.') {
             className = context.packageName + className
         }
-        val frag = instantiateFragment(
-            context, manager,
-            className, args
-        )
-        frag.arguments = args
+        /**
+         * 原创建frag
+         */
+//        val frag = instantiateFragment(
+//            context, manager,
+//            className, args
+//        )
+//        frag.arguments = args
+
+
         val ft = manager.beginTransaction()
 
         var enterAnim = navOptions?.enterAnim ?: -1
@@ -82,9 +74,11 @@ class MyNav(
 //        ft.replace(mContainerId, frag)
 
         //新切换
+        val tag = destination.id.toString()
+        var initialNavigate = false
         val currentFragment = manager.primaryNavigationFragment
         if (currentFragment != null) {
-            ft.detach(currentFragment)
+            ft.hide(currentFragment)
         } else {
             initialNavigate = true
         }
@@ -95,11 +89,11 @@ class MyNav(
             fragment = manager.fragmentFactory.instantiate(context.classLoader, className)
             ft.add(containerId, fragment, tag)
         } else {
-            ft.attach(fragment)
+            ft.show(fragment)
         }
 
 
-        ft.setPrimaryNavigationFragment(frag)
+        ft.setPrimaryNavigationFragment(fragment)
 
         @IdRes val destId = destination.id
         val initialNavigation = mBackStack.isEmpty()

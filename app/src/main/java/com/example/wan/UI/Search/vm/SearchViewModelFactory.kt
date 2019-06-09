@@ -1,4 +1,4 @@
-package com.example.wan.UI.Knowledgesys
+package com.example.wan.UI.Search.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,14 +7,14 @@ import com.example.wan.repository.remote.NetworkDataimpl
 /**
  * 文件描述：
  * @author：WJH
- * @Creatdata：2019/3/30
+ * @Creatdata：2019/5/17
  * @Version：
  *
  */
-class KnowViewModelFactory (private val repository: NetworkDataimpl) : ViewModelProvider.NewInstanceFactory(){
+class SearchViewModelFactory (private val repository: NetworkDataimpl) : ViewModelProvider.NewInstanceFactory(){
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return KnowledgeViewModel(repository) as T
+        return SearchViewModel(repository) as T
     }
 }

@@ -3,7 +3,6 @@ package com.example.wan.UI.Knowledgesys
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 
 import com.example.wan.R
+import com.example.wan.UI.Knowledgesys.vm.KnowViewModelFactory
+import com.example.wan.UI.Knowledgesys.vm.KnowledgeViewModel
+import com.example.wan.UI.account.vm.AccountViewModel
+import com.example.wan.UI.account.vm.AccountViewModelFactory
 import com.example.wan.UI.main.adapter.HomeAdapter
 import com.example.wan.UI.webview.WebViewActivity
 import com.example.wan.base.BaseFragment
 import com.example.wan.bean.Article
+import com.example.wan.context.UserContext
+import com.example.wan.context.collect.CollectListener
+import com.example.wan.toast
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.knowledge_artical_fragment.*
 import org.kodein.di.Kodein
@@ -29,6 +35,7 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
 
     override val kodein: Kodein by closestKodein()
     val knowviewModelFactory : KnowViewModelFactory by instance()
+    val accountViewModelFactory : AccountViewModelFactory by instance()
 
     private var page: Int = 0
 
@@ -37,6 +44,10 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
 
 
     private lateinit var mArticleAdapter : HomeAdapter
+
+    private lateinit var viewModel: KnowledgeViewModel
+
+    private lateinit var accountViewModel: AccountViewModel
 
     private var datas = mutableListOf<Article>()
     /**
@@ -49,6 +60,8 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this,knowviewModelFactory).get(KnowledgeViewModel::class.java)
+
+        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
         initdata()
     }
 
@@ -66,8 +79,6 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
             return articleFragment
         }
     }
-
-    private lateinit var viewModel: KnowledgeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,12 +110,19 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
 
         mArticleAdapter.run {
             onItemClickListener = monItemClickListener
-//            onItemChildClickListener = this@KnowledgeArticalFragment.onItemChildClickListener
+            onItemChildClickListener = this@KnowledgeArticalFragment.onItemChildClickListener
             setOnLoadMoreListener(onRequestLoadMoreListener,tabRvArticle)
         }
         tabRvArticle.adapter = mArticleAdapter
 
+        //刷新数据监听器
+        tabswipeRefresh.setOnRefreshListener { refreshData() }
+
         initSecondTreeTab()
+    }
+
+    private fun refreshData() {
+        initdata()
     }
 
     private fun dadaObserve() {
@@ -120,6 +138,12 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
                     addData(it.data.datas)
                 }
             }
+        })
+        accountViewModel.mLikeData.observe(this, Observer {
+            activity?.toast("收藏成功")
+        })
+        accountViewModel.mRequestCollectData.observe(this, Observer {
+            activity?.toast("取消收藏成功")
         })
     }
     private fun initSecondTreeTab() {
@@ -159,6 +183,35 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
                 putExtra(Constant.CONTENT_ID_KEY,datas[position].id)
                 putExtra(Constant.CONTENT_TITLE_KEY,datas[position].title)
                 startActivity(this)
+            }
+        }
+    }
+
+    /**
+     * 收藏
+     */
+    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
+//        if (datas.isNotEmpty()){
+//            val data = datas[position]
+        val article = mArticleAdapter.getItem(position)
+        article?.let {
+            when(view.id){
+                R.id.homeItemLike ->{
+                    UserContext.instance.collect(activity, position, object: CollectListener {
+                        override fun collect(position: Int) {
+                            val collect = it.collect
+                            // 发起 收藏/取消收藏  请求
+                            if (collect){
+                                accountViewModel.unCollect(it.id)
+                            }
+                            else{
+                                accountViewModel.Collect(it.id)
+                            }
+                            it.collect = !collect
+                            mArticleAdapter.setData(position, it)
+                        }
+                    })
+                }
             }
         }
     }

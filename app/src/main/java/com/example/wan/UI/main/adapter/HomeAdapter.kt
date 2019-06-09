@@ -6,7 +6,7 @@ import com.example.wan.R
 import com.example.wan.bean.Article
 
 
-class HomeAdapter( data: List<Article>) :BaseQuickAdapter<Article,BaseViewHolder>(R.layout.home_list_item, data) {
+class HomeAdapter( data: List<Article>) :BaseQuickAdapter<Article,BaseViewHolder>(R.layout.article_list_item, data) {
     override fun convert(helper: BaseViewHolder, item: Article?) {
         item ?: return
         @Suppress("DEPRECATION")

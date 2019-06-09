@@ -12,15 +12,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.example.wan.R
-import com.example.wan.UI.account.AccountViewModel
-import com.example.wan.UI.account.AccountViewModelFactory
-import com.example.wan.UI.account.LoginActivity
+import com.example.wan.UI.account.vm.AccountViewModel
+import com.example.wan.UI.account.vm.AccountViewModelFactory
+import com.example.wan.UI.like.vm.LikeViewModel
+import com.example.wan.UI.like.vm.LikeViewModelFactory
 import com.example.wan.UI.main.adapter.HomeAdapter
 import com.example.wan.UI.webview.WebViewActivity
 import com.example.wan.base.BaseFragment
 import com.example.wan.bean.Article
 import com.example.wan.context.UserContext
-import com.example.wan.toast
+import com.example.wan.context.collect.CollectListener
 import kotlinx.android.synthetic.main.like_fragment.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -41,11 +42,13 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     private lateinit var accountViewModel : AccountViewModel
 
-    private var datas = mutableListOf<Article>()
+    private var likedatas = mutableListOf<Article>()
 
     private val madapter by lazy {
-        HomeAdapter(datas)
+        HomeAdapter(likedatas)
     }
+
+    private var page = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +72,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
         accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
         // TODO: Use the ViewModel
         getcollectData()
-        initData()
+        dadaObserve()
     }
 
     override fun initView() {
@@ -83,15 +86,14 @@ class LikeFragment : BaseFragment(), KodeinAware {
             onItemClickListener = monItemClickListener
             onItemChildClickListener = this@LikeFragment.onItemChildClickListener
             setOnLoadMoreListener({
-                val page = madapter.data.size / 20
-                viewModel.getCollectList(page)
+                viewModel.getCollectList(++page)
             }, recycle_like)
 //            setEmptyView(R.layout.fragment_home_empty)
         }
 
     }
 
-    private fun initData() {
+    private fun dadaObserve() {
         viewModel.collectList.observe(this, Observer {
             if (it.errorCode==0){
                 addData(it.data.datas)
@@ -106,6 +108,9 @@ class LikeFragment : BaseFragment(), KodeinAware {
             else
                 UserContext.instance.login(activity)
         })
+        accountViewModel.mRequestCollectData.observe(this, Observer {
+            refreshData()
+        })
 
         swipe_refresh_like.setOnRefreshListener { refreshData() }
     }
@@ -117,6 +122,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     private fun getcollectData() {
         if(UserContext.instance.isLogin){
+            page = 0
             viewModel.getCollectList()
         }
         else{
@@ -130,11 +136,11 @@ class LikeFragment : BaseFragment(), KodeinAware {
      * 条目点击监听器
      */
     private val monItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (datas.isNotEmpty()){
+        if (likedatas.isNotEmpty()){
             Intent(activity, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,datas[position].link)
-                putExtra(Constant.CONTENT_ID_KEY,datas[position].id)
-                putExtra(Constant.CONTENT_TITLE_KEY,datas[position].title)
+                putExtra(Constant.CONTENT_URL_KEY,likedatas[position].link)
+                putExtra(Constant.CONTENT_ID_KEY,likedatas[position].id)
+                putExtra(Constant.CONTENT_TITLE_KEY,likedatas[position].title)
                 startActivity(this)
             }
         }
@@ -144,21 +150,36 @@ class LikeFragment : BaseFragment(), KodeinAware {
      *收藏按钮click监听
      */
     private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        if (datas.isNotEmpty()) {
-            val data = datas[position]
+//        if (likedatas.isNotEmpty()) {
+//            val data = likedatas[position]
+        val article = madapter.getItem(position)
+        article?.let {
             when (view.id) {
                 R.id.homeItemLike -> {
-                    if (UserContext.instance.isLogin) {
-                        val collect = data.collect
-                        data.collect = !collect
-                        madapter.setData(position, data)
-//                        viewModel.collectArticle(data.id, !collect)
-                    } else {
-                        Intent(activity, LoginActivity::class.java).run {
-                            startActivity(this)
+                    UserContext.instance.collect(context, position, object : CollectListener {
+                        override fun collect(position: Int) {
+//                            val collect = data.collect
+//                            data.collect = !collect
+//                            madapter.setData(position, data)
+                            accountViewModel.removeCollectArticle(it.id, it.originId)
+                            madapter.remove(position)
+
                         }
-                        activity?.toast(getString(R.string.login_please_login))
-                    }
+                    })
+//
+//                    if (UserContext.instance.isLogin) {
+//                        val collect = data.collect
+//                        data.collect = !collect
+//                        madapter.setData(position, data)
+//                        madapter.remove(position)
+//                        accountViewModel.removeCollectArticle(data.id, !collect)
+//                    } else {
+//                        Intent(activity, LoginActivity::class.java).run {
+//                            startActivity(this)
+//                        }
+//                        activity?.toast(getString(R.string.login_please_login))
+//                    }
+//                }
                 }
             }
         }

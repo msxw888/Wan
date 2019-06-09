@@ -15,8 +15,12 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.example.wan.R
+import com.example.wan.UI.account.vm.AccountViewModel
+import com.example.wan.UI.account.vm.AccountViewModelFactory
 import com.example.wan.UI.main.adapter.BannerAdapter
 import com.example.wan.UI.main.adapter.HomeAdapter
+import com.example.wan.UI.main.vm.MainViewModel
+import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.UI.view.HorizontalRecyclerView
 import com.example.wan.UI.webview.WebViewActivity
 import com.example.wan.base.BaseFragment
@@ -24,6 +28,7 @@ import com.example.wan.bean.BannerResponse
 import com.example.wan.bean.Article
 import com.example.wan.context.UserContext
 import com.example.wan.context.collect.CollectListener
+import com.example.wan.toast
 import kotlinx.android.synthetic.main.layout_recycleview.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -43,10 +48,12 @@ class MainFragment : BaseFragment() ,KodeinAware{
 
 
     private val viewModelFactory : MainViewModelFactory by instance()
+    private val accountViewModelFactory: AccountViewModelFactory by instance()
     /**
      * Viewmodel
      */
     private lateinit var viewModel: MainViewModel
+    private lateinit var accountViewModel: AccountViewModel
 
     /**
      * LinearLayoutManager
@@ -98,6 +105,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
+        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
         getdata()
     }
 
@@ -132,10 +140,11 @@ class MainFragment : BaseFragment() ,KodeinAware{
             }
             setOnLoadMoreListener(onRequestLoadMoreListener, recycle_main)
         }
-
+        bannerAdapter.run {
+            onItemClickListener = banneronItemClickListener
+        }
+        swipe_refresh.setOnRefreshListener { refreshData() }
 //            setEmptyView(R.layout.fragment_home_empty)
-
-
 
     }
 
@@ -151,29 +160,19 @@ class MainFragment : BaseFragment() ,KodeinAware{
                 startSwitchJob()
             }
         })
-        swipe_refresh.setOnRefreshListener { refreshData() }
+        accountViewModel.mLikeData.observe(this, Observer {
+            activity?.toast("收藏成功")
+        })
+        accountViewModel.mRequestCollectData.observe(this, Observer {
+            activity?.toast("取消收藏成功")
+        })
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
     }
-//            adapter.submitList(it)
-//        viewModel.posts.observe(this, Observer<PagedList<Article?>> {
-//        }
-//            this.adapter = adapter
-//            layoutManager = LinearLayoutManager(context)
-//        recycle_main.apply {
-//        }
-//           viewModel.retry()
-//        val adapter = HomePagingAdapter {
-//
-//    private fun initAdapter() {
-//        })
-//        viewModel.networkState.observe(this, Observer {
-//            adapter.setNetworkState(it)
-//        })
-//    }
 
 //    private fun initSwipeToRefresh() {
 //        viewModel.refreshState.observe(this, Observer {
@@ -185,9 +184,6 @@ class MainFragment : BaseFragment() ,KodeinAware{
 //    }
 
     private fun initUI() {
-
-
-
 
     }
 
@@ -203,8 +199,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
      * 下拉刷新数据
      */
     fun refreshData() {
-        viewModel.getfirstList()
-        viewModel.getbannerList()
+        getdata()
     }
 
     private var onScrollListener = object : RecyclerView.OnScrollListener() {
@@ -255,11 +250,12 @@ class MainFragment : BaseFragment() ,KodeinAware{
     }
 
     private fun addBannerData(it: List<BannerResponse.Data>?) {
-        it?.let { it1 -> bannerAdapter.addData(it1) }
+        it?.let { it1 ->
+            bannerAdapter.addData(it1) }
     }
 
     /**
-     * 条目点击监听器
+     * rv条目点击监听器
      */
     private val monItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
         if (datas.isNotEmpty()){
@@ -267,6 +263,19 @@ class MainFragment : BaseFragment() ,KodeinAware{
                 putExtra(Constant.CONTENT_URL_KEY,datas[position].link)
                 putExtra(Constant.CONTENT_ID_KEY,datas[position].id)
                 putExtra(Constant.CONTENT_TITLE_KEY,datas[position].title)
+                startActivity(this)
+            }
+        }
+    }
+    /**
+     * banner点击监听器
+     */
+    private val banneronItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
+        if (bannerDatas.isNotEmpty()){
+            Intent(activity, WebViewActivity::class.java).run {
+                putExtra(Constant.CONTENT_URL_KEY,bannerDatas[position].url)
+                putExtra(Constant.CONTENT_ID_KEY,bannerDatas[position].id)
+                putExtra(Constant.CONTENT_TITLE_KEY,bannerDatas[position].title)
                 startActivity(this)
             }
         }
@@ -284,14 +293,18 @@ class MainFragment : BaseFragment() ,KodeinAware{
                         override fun collect(position: Int) {
                             Log.d("LST", "position=$position")
                             val collect = data.collect
-                            data.collect = !collect
-                            madapter.setData(position, data)
+
 
                             // 发起 收藏/取消收藏  请求
 //                            if (collect) viewModel.unCollect(data.id) else viewModel.collect(data.id)
+                            if (collect)
+                                accountViewModel.unCollect(data.id)
+                            else
+                                accountViewModel.Collect(data.id)
+                            data.collect = !collect
+                            madapter.setData(position, data)
                         }
                     })
-
 //                    if (UserContext.instance.isLogin) {
 //                        val collect = data.collect
 //                        data.collect = !collect

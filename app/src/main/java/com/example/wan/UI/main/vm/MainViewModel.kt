@@ -1,4 +1,4 @@
-package com.example.wan.UI.main
+package com.example.wan.UI.main.vm
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,6 +27,5 @@ class MainViewModel(private val repository : NetworkDataimpl) : ViewModel() {
         repository.fetchbannerlist()
         bannerdata = repository.getbannerdata() as MutableLiveData<BannerResponse>
     }
-
 
 }

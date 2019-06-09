@@ -82,7 +82,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
     /**
      *
      */
-    fun getSearchList() :MutableLiveData<BaseResponse<HomeListResponse>> = _downloadedSearch
+//    fun getSearchList() :MutableLiveData<BaseResponse<HomeListResponse>> = _downloadedSearch
 
 
     fun fetchSearch(page: Int, k: String,data: MutableLiveData<BaseResponse<HomeListResponse>>) {
@@ -91,7 +91,6 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
                 override fun onFailure(call: Call<BaseResponse<HomeListResponse>?>, t: Throwable) {
 
                 }
-
                 override fun onResponse(
                     call: Call<BaseResponse<HomeListResponse>?>,
                     response: Response<BaseResponse<HomeListResponse>?>
@@ -107,16 +106,16 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
         }
     }
 
-    fun getCollectResponse(page: Int,data: MutableLiveData<BaseResponse<HomeListResponse>>) {
+    fun getCollectResponse(page: Int,data: MutableLiveData<BaseResponse<CollectRsp>>) {
         try {
-            network.getapi().getLikeList(page).enqueue(object: Callback<BaseResponse<HomeListResponse>?> {
-                override fun onFailure(call: Call<BaseResponse<HomeListResponse>?>, t: Throwable) {
+            network.getapi().getLikeList(page).enqueue(object: Callback<BaseResponse<CollectRsp>?> {
+                override fun onFailure(call: Call<BaseResponse<CollectRsp>?>, t: Throwable) {
                     Log.e("like>>>>>>>>>","请求失败")
                 }
 
                 override fun onResponse(
-                    call: Call<BaseResponse<HomeListResponse>?>,
-                    response: Response<BaseResponse<HomeListResponse>?>
+                    call: Call<BaseResponse<CollectRsp>?>,
+                    response: Response<BaseResponse<CollectRsp>?>
                 ) {
                     if (response.body()?.errorCode !=0){
                         Log.e("like>>>>>>>>>",response.body()?.errorMsg)

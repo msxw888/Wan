@@ -1,8 +1,8 @@
-package com.example.wan.UI.account
+package com.example.wan.UI.account.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.wan.repository.remote.NetworkDataimpl
+import com.example.wan.UI.account.AccountRepository
 
 /**
  * 文件描述：

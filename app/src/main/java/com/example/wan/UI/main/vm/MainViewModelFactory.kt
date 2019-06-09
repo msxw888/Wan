@@ -1,4 +1,4 @@
-package com.example.wan.UI.main
+package com.example.wan.UI.main.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

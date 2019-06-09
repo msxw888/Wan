@@ -5,17 +5,17 @@
             android:id="@+id/nav_graph"
             app:startDestination="@id/mainFragment_dest">
 
-    <keep_state_fragment
+    <MyNav
             android:id="@+id/likeFragment_dest"
             android:name="com.example.wan.UI.like.LikeFragment"
             android:label="like_fragment"
             tools:layout="@layout/like_fragment"/>
-    <keep_state_fragment
+    <MyNav
             android:id="@+id/mainFragment_dest"
             android:name="com.example.wan.UI.main.MainFragment"
             android:label="MainFragment"
             tools:layout="@layout/activity_main"/>
-    <keep_state_fragment
+    <MyNav
             android:id="@+id/knowledgeFragment_dest"
             android:name="com.example.wan.UI.Knowledgesys.KnowledgeFragment"
             android:label="knowledge_fragment"

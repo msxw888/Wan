@@ -27,6 +27,7 @@
     <string name="register_tips">没有账号？点此注册</string>
     <string name="account">账户</string>
     <string name="password">密码</string>
+    <string name="password_again">确认密码</string>
     <string name="not_login">未登录</string>
     <string name="goto_login">点此登录</string>
     <string name="exit_app_tips">再按一次退出</string>
@@ -36,4 +37,7 @@
     <string name="login_please_login">请先登录</string>
     <string name="search_not_empty">搜索关键字不能为空</string>
     <string name="login_fail">登录失败，请检查账户名密码后重试</string>
+    <string name="register">注册</string>
+    <string name="register_suc">注册成功</string>
+    <string name="bookmark_time">收藏时间</string>
 </resources>

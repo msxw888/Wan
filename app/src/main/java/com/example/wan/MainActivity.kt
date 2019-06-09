@@ -17,13 +17,12 @@ import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
 import com.example.wan.State.loginState
 import com.example.wan.UI.Search.SearchActivity
-import com.example.wan.UI.account.AccountViewModel
-import com.example.wan.UI.account.AccountViewModelFactory
+import com.example.wan.UI.account.vm.AccountViewModel
+import com.example.wan.UI.account.vm.AccountViewModelFactory
 import com.example.wan.UI.account.LoginActivity
 import com.example.wan.UI.main.MainFragment
-import com.example.wan.UI.main.MainViewModelFactory
+import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.base.BaseActivity
-import com.example.wan.base.KeepStateNavigator
 import com.example.wan.base.MyNav
 import com.example.wan.base.Preference
 import com.example.wan.context.UserContext
@@ -43,7 +42,7 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     override val kodein by closestKodein()
     private val mainviewModelFactory: MainViewModelFactory by instance()
-    private val accountViewModelFactory:AccountViewModelFactory by instance()
+    private val accountViewModelFactory: AccountViewModelFactory by instance()
 
     private lateinit var accountViewModel: AccountViewModel
 
@@ -95,10 +94,13 @@ class MainActivity : BaseActivity(), KodeinAware {
 //        navController = Navigation.findNavController(this,R.id.nav_host_fragment)
 //        navController.navigatorProvider
 
+        /**
+         * 自定义Nav
+         */
         // get fragment
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
         // setup custom navigator
-        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, R.id.nav_host_fragment)
+        val navigator = MyNav(this, navHostFragment.childFragmentManager, R.id.nav_host_fragment)
         navController.navigatorProvider += navigator
         // set navigation graph
         navController.setGraph(R.navigation.nav_graph)
@@ -200,7 +202,7 @@ class MainActivity : BaseActivity(), KodeinAware {
             return
         }
         val currentTime = System.currentTimeMillis()
-        if (currentTime - lastTime < 2 * 1000) {
+        if (currentTime - lastTime < 1 * 1000) {
             super.onBackPressed()
             finish()
         } else {

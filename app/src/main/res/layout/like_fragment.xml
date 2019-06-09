@@ -14,7 +14,7 @@
                 android:id="@+id/recycle_like"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/home_list_item"/>
+                tools:listitem="@layout/article_list_item"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

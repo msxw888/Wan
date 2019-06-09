@@ -6,6 +6,8 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.wan.R
+import com.example.wan.UI.account.vm.AccountViewModel
+import com.example.wan.UI.account.vm.AccountViewModelFactory
 import com.example.wan.base.BaseActivity
 import com.example.wan.context.UserContext
 import com.example.wan.toast

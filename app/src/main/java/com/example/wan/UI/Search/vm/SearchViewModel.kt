@@ -1,4 +1,4 @@
-package com.example.wan.UI.Search
+package com.example.wan.UI.Search.vm
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +20,6 @@ class SearchViewModel (private val repository : NetworkDataimpl) : ViewModel(){
     fun getSearchList(page: Int = 0, k: String) {
         repository.fetchSearch(page,k,searchdata)
 //        searchdata = repository.getSearchList()
-        Log.e("fetchlist:",searchdata.value?.data?.datas.toString())
     }
 
 //    private val queryText = MutableLiveData<Int>()

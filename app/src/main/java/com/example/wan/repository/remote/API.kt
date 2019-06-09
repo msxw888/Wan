@@ -62,7 +62,7 @@ interface API {
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("repassword") repassowrd: String
-    ): Call<RegisterResponse>
+    ): Call<BaseResponse<RegisterResponse>>
 
     /**
      * 获取自己收藏的文章列表
@@ -72,7 +72,7 @@ interface API {
     @GET("/lg/collect/list/{page}/json")
     fun getLikeList(
         @Path("page") page: Int
-    ): Call<BaseResponse<HomeListResponse>>
+    ): Call<BaseResponse<CollectRsp>>
 
     /**
      * 收藏文章
@@ -84,6 +84,23 @@ interface API {
         @Path("id") id: Int
     ): Call<BaseResponse<HomeListResponse>>
 
+    /**
+     * 删除收藏文章
+     * @param id id
+     * @param originId -1
+     * @return Deferred<HomeListResponse>
+     */
+    @POST("/lg/uncollect/{id}/json")
+    fun removeCollectArticle(
+        @Path("id") id: Int,
+        @Query("originId") originId: Int = -1
+    ): Call<BaseResponse<EmptyRsp>>
+
+    /**
+     * 取消收藏
+     */
+    @POST("/lg/uncollect_originId/{id}/json")
+    fun unCollect(@Path("id") id: Int): Call<BaseResponse<EmptyRsp>>
     /**
      * 搜索
      * @param page page
