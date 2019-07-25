@@ -1,5 +1,6 @@
 package com.example.wan.UI.Search
 
+import Constant
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,14 +28,14 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
-class SearchActivity : BaseActivity(),KodeinAware {
+class SearchActivity : BaseActivity(), KodeinAware {
     override val kodein: Kodein by closestKodein()
     private val searchViewModelFactory: SearchViewModelFactory by instance()
-    private val accountViewModelFactory : AccountViewModelFactory by instance()
+    private val accountViewModelFactory: AccountViewModelFactory by instance()
 
-    private lateinit var viewModel : SearchViewModel
+    private lateinit var viewModel: SearchViewModel
 
-    private lateinit var accountViewModel : AccountViewModel
+    private lateinit var accountViewModel: AccountViewModel
 
     /**
      * SearView
@@ -58,6 +59,8 @@ class SearchActivity : BaseActivity(),KodeinAware {
         SearchAdapter(this, datas)
     }
 
+    private var currentpage = 0
+
     override fun setLayoutId(): Int = R.layout.activity_search
 
     override fun initView() {
@@ -67,13 +70,6 @@ class SearchActivity : BaseActivity(),KodeinAware {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             setNavigationOnClickListener { finish() }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this@SearchActivity,searchViewModelFactory).get(SearchViewModel::class.java)
-        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
 
         search_recyclerView.run {
             layoutManager = LinearLayoutManager(this@SearchActivity)
@@ -81,21 +77,49 @@ class SearchActivity : BaseActivity(),KodeinAware {
         }
         searchAdapter.run {
             bindToRecyclerView(search_recyclerView)
-            setOnLoadMoreListener({
-                val page = searchAdapter.data.size / 20 + 1
-                searchKey?.let {
-                    viewModel.getSearchList(page, it)
-                }
-            }, search_recyclerView)
+            setOnLoadMoreListener(onLoadMoreSearchListener, search_recyclerView)
             onItemClickListener = this@SearchActivity.onItemClickListener
             onItemChildClickListener = this@SearchActivity.onItemChildClickListener
 //            setEmptyView(R.layout.fragment_home_empty)
         }
+
+    }
+
+    /**
+     * 加载更多事件监听
+     */
+    private val onLoadMoreSearchListener = BaseQuickAdapter.RequestLoadMoreListener {
+        val page = searchAdapter.data.size / 20
+        currentpage = page
+        if (searchAdapter.data.size < viewModel.total[0]) {
+            searchKey?.let {
+                viewModel.getSearchList(page, it)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProviders.of(this@SearchActivity, searchViewModelFactory).get(SearchViewModel::class.java)
+        accountViewModel = ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel::class.java)
+
+        dadaObserve()
+    }
+
+
+    private fun dadaObserve() {
         viewModel.searchdata.observe(this, Observer {
             it.data.datas.let {
                 addsearchData(it)
             }
-            swipeRefreshLayout.isRefreshing = false
+        })
+
+        accountViewModel.mLikeData.observe(this, Observer {
+            toast("收藏成功")
+        })
+        accountViewModel.mRequestCollectData.observe(this, Observer {
+            toast("取消收藏成功")
         })
     }
 
@@ -117,17 +141,16 @@ class SearchActivity : BaseActivity(),KodeinAware {
         override fun onQueryTextSubmit(query: String?): Boolean {
             query?.let {
                 searchKey = it
-                swipeRefreshLayout.isRefreshing = true
-                searchAdapter.setEnableLoadMore(false)
+                searchAdapter.data.clear()
+//                swipeRefreshLayout.isRefreshing = true
+//                searchAdapter.setEnableLoadMore(false)
                 viewModel.getSearchList(k = it)
-            } ?: let {
-                swipeRefreshLayout.isRefreshing = false
-                toast(getString(R.string.search_not_empty))
-            }
+            } ?: toast(getString(R.string.search_not_empty))
             searchView?.clearFocus()
             return false
         }
-        override fun onQueryTextChange(newText: String?): Boolean  = false
+
+        override fun onQueryTextChange(newText: String?): Boolean = false
     }
 
     /**
@@ -153,23 +176,17 @@ class SearchActivity : BaseActivity(),KodeinAware {
         // search listener
         setOnQueryTextListener(onQueryTextListener)
     }
+
     /**
      * rv条目点击监听器
      */
     private val onItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (datas.isNotEmpty()){
-            Intent(this, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,datas[position].link)
-                putExtra(Constant.CONTENT_TITLE_KEY,datas[position].title)
-                startActivity(this)
-            }
-        }
         val article = searchAdapter.getItem(position)
 
         article?.let {
             Intent(this, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,it.link)
-                putExtra(Constant.CONTENT_TITLE_KEY,it.title)
+                putExtra(Constant.CONTENT_URL_KEY, it.link)
+                putExtra(Constant.CONTENT_TITLE_KEY, it.title)
                 startActivity(this)
             }
         }
@@ -179,29 +196,29 @@ class SearchActivity : BaseActivity(),KodeinAware {
      * 收藏
      */
     private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
-//        if (datas.isNotEmpty()){
+        //        if (datas.isNotEmpty()){
 //            val data = datas[position]
-            val article = searchAdapter.getItem(position)
-            article?.let {
-                when(view.id){
-                    R.id.homeItemLike ->{
-                        UserContext.instance.collect(this, position, object: CollectListener {
-                            override fun collect(position: Int) {
-                                Log.d("LST", "position=$position")
-                                val collect = it.collect
-                                it.collect = !collect
-                                searchAdapter.setData(position, it)
-                                // 发起 收藏/取消收藏  请求
+        val article = searchAdapter.getItem(position)
+        article?.let {
+            when (view.id) {
+                R.id.homeItemLike -> {
+                    UserContext.instance.collect(this, position, object : CollectListener {
+                        override fun collect(position: Int) {
+                            Log.d("LST", "position=$position")
+                            val collect = it.collect
+                            it.collect = !collect
+                            searchAdapter.setData(position, it)
+                            // 发起 收藏/取消收藏  请求
 //                            if (collect) viewModel.unCollect(data.id) else viewModel.collect(data.id)
-                                if (collect)
-                                    accountViewModel.unCollect(it.id)
-                                else
-                                    accountViewModel.Collect(it.id)
-                            }
-                        })
-                    }
+                            if (collect)
+                                accountViewModel.unCollect(it.id)
+                            else
+                                accountViewModel.Collect(it.id)
+                        }
+                    })
                 }
             }
+        }
 //        }
     }
 
@@ -210,21 +227,33 @@ class SearchActivity : BaseActivity(),KodeinAware {
      */
     fun addsearchData(articleList: List<Article>) {
 
-        // 如果为空的话，就直接 显示加载完毕
+        // 如果返回为空的话，就直接 显示加载完毕
         if (articleList.isEmpty()) {
             searchAdapter.loadMoreEnd()
-            swipeRefreshLayout.isRefreshing = false
+//            swipeRefreshLayout.isRefreshing = false
+            return
+        }
+        if (searchAdapter.data.size + articleList.size >= viewModel.total[0]) {
+            searchAdapter.loadMoreEnd()
+            searchAdapter.setEnableLoadMore(false)
             return
         }
         // 如果是下拉刷新 直接设置数据
-        if (swipeRefreshLayout.isRefreshing) {
-            swipeRefreshLayout.isRefreshing = false
+//        if (swipeRefreshLayout.isRefreshing) {
+//            swipeRefreshLayout.isRefreshing = false
+//            searchAdapter.setNewData(articleList)
+//            searchAdapter.loadMoreComplete()
+//            return
+//        }
+        // 如果是再次搜索 直接设置全新数据
+        if (searchAdapter.data.isEmpty()) {
             searchAdapter.setNewData(articleList)
             searchAdapter.loadMoreComplete()
             return
         }
-        // 否则 添加新数据
+        // 否则 添加增量数据
         searchAdapter.addData(articleList)
         searchAdapter.loadMoreComplete()
+        searchAdapter.setEnableLoadMore(true)
     }
 }

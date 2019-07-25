@@ -1,7 +1,8 @@
 package com.example.wan.UI.account
 
+import Constant
 import androidx.lifecycle.MutableLiveData
-import com.example.wan.State.loginState
+import com.example.wan.State.LoginState
 import com.example.wan.base.Preference
 import com.example.wan.bean.*
 import com.example.wan.loge
@@ -13,7 +14,7 @@ import retrofit2.Response
 /**
  * 文件描述：
  * @author：WJH
- * @Creatdata：2019/4/30
+ * @Creatdate：2019/4/30
  * @Version：
  *
  */
@@ -32,7 +33,7 @@ class AccountRepository(private val network : RetrofitHelper) {
     var pwd: String? by Preference(Constant.PASSWORD_KEY, "")
 
 
-//    fun login(username: String, password: String, mLoginData: MutableLiveData<loginState>) {
+//    fun login(username: String, password: String, mLoginData: MutableLiveData<LoginState>) {
 //        try {
 //            network.getapi().loginWanAndroid(username, password).enqueue(object: Callback<LoginResponse> {
 //                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
@@ -47,7 +48,7 @@ class AccountRepository(private val network : RetrofitHelper) {
 //            loge("login:","exception")
 //        }
 //    }
-    fun login(username: String, password: String, mLoginData: MutableLiveData<loginState>){
+    fun login(username: String, password: String, mLoginData: MutableLiveData<LoginState>){
         network.getapi().loginWanAndroid(username, password).enqueue(object: Callback<BaseResponse<LoginResponse>?> {
             override fun onFailure(call: Call<BaseResponse<LoginResponse>?>, t: Throwable) {
                 loge("login>>>>>>>>>>","请求失败")
@@ -59,12 +60,12 @@ class AccountRepository(private val network : RetrofitHelper) {
             ) {
                 response.body()?.let {
                     if (it.errorCode!=0){
-                        mLoginData.postValue(loginState(usern = "点此登录",state = false))
+                        mLoginData.postValue(LoginState(usern = "点此登录",state = false))
                     }
                     else if(it.errorCode==0){
                         user = username
                         isLogin = true
-                        mLoginData.postValue(loginState(usern = it.data.username,state = true))
+                        mLoginData.postValue(LoginState(usern = it.data.username,state = true))
                     }
                 }
             }

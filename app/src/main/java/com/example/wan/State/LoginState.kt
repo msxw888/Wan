@@ -7,7 +7,7 @@ package com.example.wan.State
  * @Version：
  *
  */
-data class loginState(
+data class LoginState(
     var usern:String,
     var state:Boolean
 )

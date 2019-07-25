@@ -1,7 +1,7 @@
 import android.widget.Toast
 
 /**
- * 常量
+ * 静态常量
  */
 object Constant {
     /**

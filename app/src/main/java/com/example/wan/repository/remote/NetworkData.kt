@@ -1,9 +1,8 @@
 package com.example.wan.repository.remote
 
 import androidx.lifecycle.LiveData
-import com.example.wan.bean.BannerResponse
-import com.example.wan.bean.BaseResponse
-import com.example.wan.bean.HomeListResponse
+import androidx.lifecycle.MutableLiveData
+import com.example.wan.bean.*
 
 /**
  * 文件描述：
@@ -22,4 +21,18 @@ interface NetworkData {
     fun fetchbannerlist()
 
     fun getbannerdata():LiveData<BannerResponse>
+
+    /**
+     * 搜索
+     */
+    fun fetchSearch(page: Int, k: String,data: MutableLiveData<BaseResponse<HomeListResponse>>,total : Array<Int>)
+
+    /**
+     * 收藏列表
+     */
+    fun getCollectResponse(page: Int,data: MutableLiveData<BaseResponse<CollectRsp>>)
+
+    fun getTree(data: MutableLiveData<BaseResponse<List<TopTreeRsp>>>)
+
+    fun getArticle(page: Int, cid: Int, data: MutableLiveData<BaseResponse<TreeArticleRsp>>)
 }

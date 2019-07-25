@@ -1,16 +1,16 @@
 package com.example.wan.UI.Knowledgesys
 
+import Constant
 import android.content.Intent
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
-
 import com.example.wan.R
 import com.example.wan.UI.Knowledgesys.vm.KnowViewModelFactory
 import com.example.wan.UI.Knowledgesys.vm.KnowledgeViewModel
@@ -119,6 +119,11 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
         tabswipeRefresh.setOnRefreshListener { refreshData() }
 
         initSecondTreeTab()
+        setRefreshView()
+    }
+
+    private fun setRefreshView() {
+        tabswipeRefresh.isRefreshing = true
     }
 
     private fun refreshData() {
@@ -177,18 +182,20 @@ class KnowledgeArticalFragment : BaseFragment(), KodeinAware {
      * 条目点击监听器
      */
     private val monItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (datas.isNotEmpty()){
+//        if (datas.isNotEmpty()){
+        val article = mArticleAdapter.getItem(position)
+        article?.let {
             Intent(activity, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,datas[position].link)
-                putExtra(Constant.CONTENT_ID_KEY,datas[position].id)
-                putExtra(Constant.CONTENT_TITLE_KEY,datas[position].title)
+                putExtra(Constant.CONTENT_URL_KEY,it.link)
+                putExtra(Constant.CONTENT_ID_KEY,it.id)
+                putExtra(Constant.CONTENT_TITLE_KEY,it.title)
                 startActivity(this)
             }
         }
     }
 
     /**
-     * 收藏
+     * 收藏按钮点击监听
      */
     private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
 //        if (datas.isNotEmpty()){

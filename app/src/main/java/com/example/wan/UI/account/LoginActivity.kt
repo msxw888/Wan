@@ -1,5 +1,6 @@
 package com.example.wan.UI.account
 
+import Constant
 import android.app.Activity
 import android.content.Intent
 import android.view.View
@@ -57,10 +58,12 @@ class LoginActivity : BaseActivity() ,View.OnClickListener,KodeinAware{
             R.id.mBtnLogin ->{
                 mViewModel.getLoginData(mTieAccount.text.toString(), mTiePassword.text.toString())
             }
-//            R.id.mTvRegister ->{
+            R.id.mTvRegister ->{
 //                startActivity<RegisterActivity>()
-//                finish()
-//            }
+                Intent(this, RegisterActivity::class.java).run {
+                    startActivity(this)
+                }
+            }
         }
     }
 }

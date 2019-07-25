@@ -1,14 +1,13 @@
 package com.example.wan.UI.Knowledgesys
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-
+import androidx.lifecycle.ViewModelProviders
 import com.example.wan.R
 import com.example.wan.UI.Knowledgesys.adapter.TopTreeAdapter
 import com.example.wan.UI.Knowledgesys.vm.KnowViewModelFactory
@@ -54,7 +53,8 @@ class KnowledgeFragment : BaseFragment(),KodeinAware{
 
     fun dataObserver() {
        viewModel.mTreeData.observe(this, Observer {
-           it?.let { initSystemData(it.data)
+           it?.let {
+               initSystemData(it.data)
                Log.e("ftest", it.data.toString())
            }
        })

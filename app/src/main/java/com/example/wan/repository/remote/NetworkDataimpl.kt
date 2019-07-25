@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.wan.bean.*
-import com.example.wan.loge
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,9 +74,9 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
         return bannerlist
     }
 
-    private val _downloadedSearch = MutableLiveData<BaseResponse<HomeListResponse>>()
-    val downloadedSearch: LiveData<BaseResponse<HomeListResponse>>
-        get() = _downloadedSearch
+//    private val _downloadedSearch = MutableLiveData<BaseResponse<HomeListResponse>>()
+//    val downloadedSearch: LiveData<BaseResponse<HomeListResponse>>
+//        get() = _downloadedSearch
 
     /**
      *
@@ -85,7 +84,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
 //    fun getSearchList() :MutableLiveData<BaseResponse<HomeListResponse>> = _downloadedSearch
 
 
-    fun fetchSearch(page: Int, k: String,data: MutableLiveData<BaseResponse<HomeListResponse>>) {
+    override fun fetchSearch(page: Int, k: String,data: MutableLiveData<BaseResponse<HomeListResponse>>,total : Array<Int> ) {
         try {
             network.getapi().getSearchList(page, k).enqueue(object: Callback<BaseResponse<HomeListResponse>?> {
                 override fun onFailure(call: Call<BaseResponse<HomeListResponse>?>, t: Throwable) {
@@ -97,7 +96,8 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
                 ) {
 //                    _downloadedSearch.postValue(response.body())
                     data.postValue(response.body())
-                    Log.e("downfetchsearchlist:",_downloadedSearch.toString())
+                    Log.e("downfetchsearchlist:",response.body()?.data?.pageCount.toString())
+                    total[0] = response.body()?.data?.total!!
                 }
             })
 
@@ -106,7 +106,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
         }
     }
 
-    fun getCollectResponse(page: Int,data: MutableLiveData<BaseResponse<CollectRsp>>) {
+    override fun getCollectResponse(page: Int, data: MutableLiveData<BaseResponse<CollectRsp>>) {
         try {
             network.getapi().getLikeList(page).enqueue(object: Callback<BaseResponse<CollectRsp>?> {
                 override fun onFailure(call: Call<BaseResponse<CollectRsp>?>, t: Throwable) {
@@ -132,7 +132,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
 
     }
 
-    fun getTree(data: MutableLiveData<BaseResponse<List<TopTreeRsp>>>) {
+    override fun getTree(data: MutableLiveData<BaseResponse<List<TopTreeRsp>>>) {
         try {
             network.getapi().getTypeTreeList().enqueue(object: Callback<BaseResponse<List<TopTreeRsp>>?> {
                 override fun onFailure(call: Call<BaseResponse<List<TopTreeRsp>>?>, t: Throwable) {
@@ -157,7 +157,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
         }
     }
 
-    fun getArticle(page: Int, cid: Int, data: MutableLiveData<BaseResponse<TreeArticleRsp>>) {
+    override fun getArticle(page: Int, cid: Int, data: MutableLiveData<BaseResponse<TreeArticleRsp>>) {
         network.getapi().getTreeArticleList(page, cid).enqueue(object: Callback<BaseResponse<TreeArticleRsp>?> {
             override fun onFailure(call: Call<BaseResponse<TreeArticleRsp>?>, t: Throwable) {
                 Log.e("typearticle>>>>>>>>>","请求失败")

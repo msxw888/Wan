@@ -8,9 +8,9 @@ import com.example.wan.UI.account.vm.AccountViewModelFactory
 import com.example.wan.UI.like.vm.LikeViewModelFactory
 import com.example.wan.UI.main.MainFragment
 import com.example.wan.UI.main.vm.MainViewModelFactory
-import com.example.wan.repository.remote.RetrofitHelper
 import com.example.wan.repository.Repository
 import com.example.wan.repository.remote.NetworkDataimpl
+import com.example.wan.repository.remote.RetrofitHelper
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -18,7 +18,6 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
-import java.util.concurrent.Executor
 
 /**
  * 文件描述：
@@ -28,6 +27,7 @@ import java.util.concurrent.Executor
  *
  */
 class MyApplication : Application(),KodeinAware {
+
     override val kodein = Kodein.lazy {
         import(androidXModule(this@MyApplication))
 
@@ -35,8 +35,6 @@ class MyApplication : Application(),KodeinAware {
         bind() from provider { MainViewModelFactory(instance()) }
         bind<RetrofitHelper>() with singleton { RetrofitHelper.instance}
         bind<MainFragment>() with singleton { MainFragment() }
-//        bind<API>() with singleton { API() }
-        bind<Executor>() with singleton { Executor{instance()} }
         bind<NetworkDataimpl>() with singleton { NetworkDataimpl(instance()) }
         bind() from provider { AccountViewModelFactory(instance()) }
         bind<AccountRepository>() with singleton { AccountRepository(instance()) }
@@ -46,6 +44,7 @@ class MyApplication : Application(),KodeinAware {
     }
 
     override fun onCreate() {
+//        Debug.startMethodTracing("wan_start")
         super.onCreate()
         Preference.setContext(applicationContext)
     }

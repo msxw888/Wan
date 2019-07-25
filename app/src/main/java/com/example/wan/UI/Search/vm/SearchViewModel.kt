@@ -1,6 +1,5 @@
 package com.example.wan.UI.Search.vm
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.wan.bean.BaseResponse
@@ -17,9 +16,14 @@ import com.example.wan.repository.remote.NetworkDataimpl
 class SearchViewModel (private val repository : NetworkDataimpl) : ViewModel(){
     var searchdata = MutableLiveData<BaseResponse<HomeListResponse>>()
 
+    var total  = arrayOf(Int.MAX_VALUE)
+
     fun getSearchList(page: Int = 0, k: String) {
-        repository.fetchSearch(page,k,searchdata)
-//        searchdata = repository.getSearchList()
+        if (page!=0&&page<total[0]){
+            repository.fetchSearch(page, k, searchdata,total)
+        }else if (page==0){
+            repository.fetchSearch(page,k,searchdata,total)
+        }
     }
 
 //    private val queryText = MutableLiveData<Int>()

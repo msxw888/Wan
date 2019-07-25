@@ -22,6 +22,7 @@ import com.example.wan.base.BaseFragment
 import com.example.wan.bean.Article
 import com.example.wan.context.UserContext
 import com.example.wan.context.collect.CollectListener
+import com.example.wan.toast
 import kotlinx.android.synthetic.main.like_fragment.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -32,7 +33,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     override val kodein: Kodein by closestKodein()
     private val accountViewModelFactory: AccountViewModelFactory by instance()
-    private val viewModelFactory : LikeViewModelFactory by instance()
+    private val viewModelFactory: LikeViewModelFactory by instance()
 
     companion object {
         fun newInstance() = LikeFragment()
@@ -40,7 +41,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     private lateinit var viewModel: LikeViewModel
 
-    private lateinit var accountViewModel : AccountViewModel
+    private lateinit var accountViewModel: AccountViewModel
 
     private var likedatas = mutableListOf<Article>()
 
@@ -58,24 +59,9 @@ class LikeFragment : BaseFragment(), KodeinAware {
     }
 
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-//        initView()
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(LikeViewModel::class.java)
-
-        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
-        // TODO: Use the ViewModel
-        getcollectData()
-        dadaObserve()
-    }
-
-    override fun initView() {
         recycle_like.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = madapter
@@ -90,26 +76,43 @@ class LikeFragment : BaseFragment(), KodeinAware {
             }, recycle_like)
 //            setEmptyView(R.layout.fragment_home_empty)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(LikeViewModel::class.java)
+
+        accountViewModel = ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel::class.java)
+        // TODO: Use the ViewModel
+        refreshData()
+        dadaObserve()
+    }
+
+
+    override fun initView() {
 
     }
 
+
     private fun dadaObserve() {
         viewModel.collectList.observe(this, Observer {
-            if (it.errorCode==0){
+            if (it.errorCode == 0) {
                 addData(it.data.datas)
-            }
-            else
+            } else
                 UserContext.instance.login(activity)
         })
         accountViewModel.mLoginData.observe(this, Observer {
             if (it.state) {
                 refreshData()
-            }
-            else
+            } else
                 UserContext.instance.login(activity)
         })
+
+        accountViewModel.mLikeData.observe(this, Observer {
+            activity?.toast("收藏成功")
+        })
         accountViewModel.mRequestCollectData.observe(this, Observer {
-            refreshData()
+            activity?.toast("取消收藏成功")
         })
 
         swipe_refresh_like.setOnRefreshListener { refreshData() }
@@ -117,18 +120,19 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
 
     private fun refreshData() {
+        swipe_refresh_like.isRefreshing = true
         getcollectData()
     }
 
     private fun getcollectData() {
-        if(UserContext.instance.isLogin){
+        if (UserContext.instance.isLogin) {
             page = 0
             viewModel.getCollectList()
-        }
-        else{
+        } else {
             findNavController().navigate(R.id.mainFragment_dest)
             UserContext.instance.login(activity)
         }
+
     }
 
 
@@ -136,11 +140,11 @@ class LikeFragment : BaseFragment(), KodeinAware {
      * 条目点击监听器
      */
     private val monItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (likedatas.isNotEmpty()){
+        if (likedatas.isNotEmpty()) {
             Intent(activity, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,likedatas[position].link)
-                putExtra(Constant.CONTENT_ID_KEY,likedatas[position].id)
-                putExtra(Constant.CONTENT_TITLE_KEY,likedatas[position].title)
+                putExtra(Constant.CONTENT_URL_KEY, likedatas[position].link)
+                putExtra(Constant.CONTENT_ID_KEY, likedatas[position].id)
+                putExtra(Constant.CONTENT_TITLE_KEY, likedatas[position].title)
                 startActivity(this)
             }
         }
@@ -150,7 +154,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
      *收藏按钮click监听
      */
     private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-//        if (likedatas.isNotEmpty()) {
+        //        if (likedatas.isNotEmpty()) {
 //            val data = likedatas[position]
         val article = madapter.getItem(position)
         article?.let {

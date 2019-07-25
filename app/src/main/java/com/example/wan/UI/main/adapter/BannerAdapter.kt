@@ -1,11 +1,7 @@
 package com.example.wan.UI.main.adapter
 
 import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

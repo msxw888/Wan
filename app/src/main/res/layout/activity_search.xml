@@ -27,10 +27,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <!--<androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+            <!--android:id="@+id/swipeRefreshLayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
 
         <androidx.recyclerview.widget.RecyclerView
                 android:background="@color/background"
@@ -43,6 +43,6 @@
                 android:scrollbars="vertical"
                 tools:listitem="@layout/article_list_item"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!--</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
 </LinearLayout>

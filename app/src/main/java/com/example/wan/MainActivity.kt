@@ -13,36 +13,40 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.plusAssign
 import androidx.navigation.ui.setupWithNavController
-import com.example.wan.State.loginState
+import com.example.wan.State.LoginState
 import com.example.wan.UI.Search.SearchActivity
+import com.example.wan.UI.account.LoginActivity
 import com.example.wan.UI.account.vm.AccountViewModel
 import com.example.wan.UI.account.vm.AccountViewModelFactory
-import com.example.wan.UI.account.LoginActivity
 import com.example.wan.UI.main.MainFragment
 import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.base.BaseActivity
-import com.example.wan.base.MyNav
 import com.example.wan.base.Preference
 import com.example.wan.context.UserContext
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_webview.*
 import kotlinx.android.synthetic.main.layout_content.*
 import kotlinx.android.synthetic.main.nav_head_main.*
+import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
 class MainActivity : BaseActivity(), KodeinAware {
+
+//    override fun onWindowFocusChanged(hasFocus: Boolean) {
+//        super.onWindowFocusChanged(hasFocus)
+//        Debug.stopMethodTracing()
+//    }
 
     private var lastTime: Long = 0
 
     private val navController: NavController by lazy { Navigation.findNavController(this,R.id.nav_host_fragment) }
 
-    override val kodein by closestKodein()
+    override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
     private val mainviewModelFactory: MainViewModelFactory by instance()
     private val accountViewModelFactory: AccountViewModelFactory by instance()
+
 
     private lateinit var accountViewModel: AccountViewModel
 
@@ -76,9 +80,6 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
-
         //设置Toolbar标题
         setToolBar(toolbar_main,getString(R.string.app_name))
 
@@ -89,34 +90,44 @@ class MainActivity : BaseActivity(), KodeinAware {
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-
         //jetpack的navigation
 //        navController = Navigation.findNavController(this,R.id.nav_host_fragment)
 //        navController.navigatorProvider
 
         /**
          * 自定义Nav
-         */
-        // get fragment
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
-        // setup custom navigator
-        val navigator = MyNav(this, navHostFragment.childFragmentManager, R.id.nav_host_fragment)
-        navController.navigatorProvider += navigator
-        // set navigation graph
-        navController.setGraph(R.navigation.nav_graph)
+//         */
+//        // get fragment
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
+//        // setup custom navigator
+//        val navigator = MyNav(this, navHostFragment.childFragmentManager, R.id.nav_host_fragment)
+//        navController.navigatorProvider += navigator
+//        // set navigation graph
+//        navController.setGraph(R.navigation.nav_graph)
 
         bottomNavigation?.setupWithNavController(navController)
 //        setupActionBarWithNavController(this,navController)
 
-
-
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.nav_host_fragment, MainFragment.newInstance())
-//                .commitNow()
-//        }
         initNavigation()
         initDrawerLayout()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
+        dadaObserve()
+    }
+
+    private fun dadaObserve() {
+        accountViewModel.mLoginData.observe(this, Observer {
+            navigationname.text = it.usern
+        })
     }
 
     private fun initNavigation() {
@@ -135,23 +146,19 @@ class MainActivity : BaseActivity(), KodeinAware {
                 }
             }
         }
-        accountViewModel.mLoginData.observe(this, Observer {
-            navigationname.text = it.usern
-        })
+
     }
 
     private fun initDrawerLayout() {
         nav_view.setNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_logout ->{
-//                    if(UserContext.instance.isLogin) {
                         UserContext.instance.logoutSuccess()
                         mTvName.text = getString(R.string.goto_login)
-                        accountViewModel.mLoginData.value = loginState(getString(R.string.goto_login), false)
+                        accountViewModel.mLoginData.value = LoginState(getString(R.string.goto_login), false)
                         mainFragment?.refreshData()
                         navController.navigate(R.id.mainFragment_dest)
                         toast("已退出登录")
-//                    }
                         true
                 }
                 else -> false
@@ -210,6 +217,7 @@ class MainActivity : BaseActivity(), KodeinAware {
             lastTime = currentTime
         }
     }
+
 
     /**
      * 暂不使用，暂时还是使用navcontrl

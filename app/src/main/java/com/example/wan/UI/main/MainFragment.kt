@@ -24,8 +24,8 @@ import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.UI.view.HorizontalRecyclerView
 import com.example.wan.UI.webview.WebViewActivity
 import com.example.wan.base.BaseFragment
-import com.example.wan.bean.BannerResponse
 import com.example.wan.bean.Article
+import com.example.wan.bean.BannerResponse
 import com.example.wan.context.UserContext
 import com.example.wan.context.collect.CollectListener
 import com.example.wan.toast
@@ -38,7 +38,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class MainFragment : BaseFragment() ,KodeinAware{
+class MainFragment : BaseFragment(), KodeinAware {
     private var currentIndex = 0
 
     /**
@@ -47,7 +47,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
     override val kodein by closestKodein()
 
 
-    private val viewModelFactory : MainViewModelFactory by instance()
+    private val viewModelFactory: MainViewModelFactory by instance()
     private val accountViewModelFactory: AccountViewModelFactory by instance()
     /**
      * Viewmodel
@@ -65,7 +65,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
     /**
      * BannerRecycleview
      */
-    private lateinit var bannerRecycleView:HorizontalRecyclerView
+    private lateinit var bannerRecycleView: HorizontalRecyclerView
 
     /**
      * Banner switch job
@@ -83,18 +83,18 @@ class MainFragment : BaseFragment() ,KodeinAware{
 
     private var bannerDatas = mutableListOf<BannerResponse.Data>()
 
-    private val bannerAdapter : BannerAdapter by lazy {
+    private val bannerAdapter: BannerAdapter by lazy {
         BannerAdapter(activity, bannerDatas)
     }
 
     private var datas: List<Article> = mutableListOf()
 
-    private val madapter = HomeAdapter(datas)
+    private val homeAdapter = HomeAdapter(datas)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mainView?:let{
+        mainView ?: let {
             mainView = inflater.inflate(R.layout.main_fragment, container, false)
             bannerRecycleView = LayoutInflater.from(activity).inflate(R.layout.banner, null) as HorizontalRecyclerView
 //            View.inflate(activity,R.layout.banner,null) as HorizontalRecyclerView
@@ -104,8 +104,8 @@ class MainFragment : BaseFragment() ,KodeinAware{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this,viewModelFactory).get(MainViewModel::class.java)
-        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        accountViewModel = ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel::class.java)
         getdata()
     }
 
@@ -118,12 +118,12 @@ class MainFragment : BaseFragment() ,KodeinAware{
 //        initAdapter()
 //        initSwipeToRefresh()
     }
+
     override fun initView() {
         recycle_main.run {
             layoutManager = LinearLayoutManager(activity)
-            adapter = madapter
+            adapter = homeAdapter
         }
-
         bannerRecycleView.run {
             layoutManager = linearLayoutManager
             adapter = bannerAdapter
@@ -132,7 +132,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
             setOnTouchListener(onTouchListener)
             addOnScrollListener(onScrollListener)
         }
-        madapter.run {
+        homeAdapter.run {
             onItemClickListener = monItemClickListener
             onItemChildClickListener = this@MainFragment.onItemChildClickListener
             if (headerLayout == null) {
@@ -145,7 +145,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
         }
         swipe_refresh.setOnRefreshListener { refreshData() }
 //            setEmptyView(R.layout.fragment_home_empty)
-
+        setRefreshView()
     }
 
     fun initData() {
@@ -160,13 +160,17 @@ class MainFragment : BaseFragment() ,KodeinAware{
                 startSwitchJob()
             }
         })
+        dadaObserve()
+
+    }
+
+    private fun dadaObserve() {
         accountViewModel.mLikeData.observe(this, Observer {
             activity?.toast("收藏成功")
         })
         accountViewModel.mRequestCollectData.observe(this, Observer {
             activity?.toast("取消收藏成功")
         })
-
     }
 
     override fun onDestroyView() {
@@ -174,18 +178,6 @@ class MainFragment : BaseFragment() ,KodeinAware{
 
     }
 
-//    private fun initSwipeToRefresh() {
-//        viewModel.refreshState.observe(this, Observer {
-//            swipe_refresh.isRefreshing = it == NetworkState.LOADING
-//        })
-//        swipe_refresh.setOnRefreshListener {
-//            viewModel.refresh()
-//        }
-//    }
-
-    private fun initUI() {
-
-    }
 
     /**
      * 从viewmodel获取数据
@@ -193,6 +185,10 @@ class MainFragment : BaseFragment() ,KodeinAware{
     private fun getdata() {
         viewModel.getfirstList()
         viewModel.getbannerList()
+    }
+
+    private fun setRefreshView() {
+        swipe_refresh.isRefreshing = true
     }
 
     /**
@@ -205,8 +201,8 @@ class MainFragment : BaseFragment() ,KodeinAware{
     private var onScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-            when(newState){
-                RecyclerView.SCROLL_STATE_IDLE->{
+            when (newState) {
+                RecyclerView.SCROLL_STATE_IDLE -> {
                     currentIndex = linearLayoutManager.findFirstVisibleItemPosition()
                     startSwitchJob()
                 }
@@ -214,17 +210,20 @@ class MainFragment : BaseFragment() ,KodeinAware{
         }
     }
 
-    private var onTouchListener =  View.OnTouchListener { v, event ->
-        when(event.action){
-            MotionEvent.ACTION_MOVE ->{
+    private var onTouchListener = View.OnTouchListener { v, event ->
+        when (event.action) {
+            MotionEvent.ACTION_MOVE -> {
                 cancelSwitchJob()
             }
         }
         false
     }
 
+    /**
+     * 加載更多
+     */
     private var onRequestLoadMoreListener = BaseQuickAdapter.RequestLoadMoreListener {
-        val page = madapter.data.size / 20
+        val page = homeAdapter.data.size / 20
         viewModel.gethomelist(page)
     }
 
@@ -234,35 +233,38 @@ class MainFragment : BaseFragment() ,KodeinAware{
     fun addHomeData(articleList: List<Article>) {
         // 如果为空的话，就直接 显示加载完毕
         if (articleList.isEmpty()) {
-            madapter.loadMoreEnd()
+            homeAdapter.loadMoreEnd()
             return
         }
         // 如果是 下拉刷新 直接设置数据
         if (swipe_refresh.isRefreshing) {
             swipe_refresh.isRefreshing = false
-            madapter.setNewData(articleList)
-            madapter.loadMoreComplete()
+            homeAdapter.setNewData(articleList)
+            homeAdapter.loadMoreComplete()
             return
         }
         // 否则 添加新数据
-        madapter.addData(articleList)
-        madapter.loadMoreComplete()
+        homeAdapter.addData(articleList)
+        homeAdapter.loadMoreComplete()
     }
 
     private fun addBannerData(it: List<BannerResponse.Data>?) {
         it?.let { it1 ->
-            bannerAdapter.addData(it1) }
+            bannerAdapter.addData(it1)
+        }
     }
 
     /**
      * rv条目点击监听器
      */
     private val monItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (datas.isNotEmpty()){
+        //        if (datas.isNotEmpty()){
+        val article = homeAdapter.getItem(position)
+        article?.let {
             Intent(activity, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,datas[position].link)
-                putExtra(Constant.CONTENT_ID_KEY,datas[position].id)
-                putExtra(Constant.CONTENT_TITLE_KEY,datas[position].title)
+                putExtra(Constant.CONTENT_URL_KEY, it.link)
+                putExtra(Constant.CONTENT_ID_KEY, it.id)
+                putExtra(Constant.CONTENT_TITLE_KEY, it.title)
                 startActivity(this)
             }
         }
@@ -271,11 +273,11 @@ class MainFragment : BaseFragment() ,KodeinAware{
      * banner点击监听器
      */
     private val banneronItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (bannerDatas.isNotEmpty()){
+        if (bannerDatas.isNotEmpty()) {
             Intent(activity, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY,bannerDatas[position].url)
-                putExtra(Constant.CONTENT_ID_KEY,bannerDatas[position].id)
-                putExtra(Constant.CONTENT_TITLE_KEY,bannerDatas[position].title)
+                putExtra(Constant.CONTENT_URL_KEY, bannerDatas[position].url)
+                putExtra(Constant.CONTENT_ID_KEY, bannerDatas[position].id)
+                putExtra(Constant.CONTENT_TITLE_KEY, bannerDatas[position].title)
                 startActivity(this)
             }
         }
@@ -285,30 +287,32 @@ class MainFragment : BaseFragment() ,KodeinAware{
      *收藏按钮click监听
      */
     private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        if (datas.isNotEmpty()) {
-            val data = datas[position]
+        //        if (datas.isNotEmpty()) {
+//            val data = datas[position]
+        val article = homeAdapter.getItem(position)
+        article?.let {
             when (view.id) {
                 R.id.homeItemLike -> {
-                    UserContext.instance.collect(context, position, object: CollectListener {
+                    UserContext.instance.collect(context, position, object : CollectListener {
                         override fun collect(position: Int) {
                             Log.d("LST", "position=$position")
-                            val collect = data.collect
+                            val collect = it.collect
 
 
                             // 发起 收藏/取消收藏  请求
 //                            if (collect) viewModel.unCollect(data.id) else viewModel.collect(data.id)
                             if (collect)
-                                accountViewModel.unCollect(data.id)
+                                accountViewModel.unCollect(it.id)
                             else
-                                accountViewModel.Collect(data.id)
-                            data.collect = !collect
-                            madapter.setData(position, data)
+                                accountViewModel.Collect(it.id)
+                            it.collect = !collect
+                            homeAdapter.setData(position, it)
                         }
                     })
 //                    if (UserContext.instance.isLogin) {
 //                        val collect = data.collect
 //                        data.collect = !collect
-//                        madapter.setData(position, data)
+//                        homeAdapter.setData(position, data)
 ////                        viewModel.collectArticle(data.id, !collect)
 //                    } else {
 //                        Intent(activity, LoginActivity::class.java).run {
@@ -353,7 +357,7 @@ class MainFragment : BaseFragment() ,KodeinAware{
      * 取消滚动job
      */
     private fun cancelSwitchJob() = bannerSwitchJob?.run {
-        if (isActive){
+        if (isActive) {
             cancel()
         }
     }
