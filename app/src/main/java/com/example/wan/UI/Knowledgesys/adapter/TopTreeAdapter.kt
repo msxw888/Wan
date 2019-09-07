@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentPagerAdapter
  *
  */
 class TopTreeAdapter(fm :FragmentManager,val title:List<String>,val fragments: List<Fragment>)
-    :FragmentPagerAdapter(fm){
+    :FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
     override fun getItem(position: Int): Fragment  =fragments[position]
 
     override fun getCount(): Int  = fragments.size

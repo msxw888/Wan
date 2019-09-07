@@ -21,7 +21,7 @@ class HorizontalRecyclerView : RecyclerView {
 
     /**
      * don't intercept touch
-     * 不拦截触摸事件
+     * set parent不拦截触摸事件
      */
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         parent.requestDisallowInterceptTouchEvent(true)

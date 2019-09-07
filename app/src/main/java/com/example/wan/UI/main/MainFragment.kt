@@ -22,6 +22,7 @@ import com.example.wan.UI.main.adapter.HomeAdapter
 import com.example.wan.UI.main.vm.MainViewModel
 import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.UI.view.HorizontalRecyclerView
+import com.example.wan.UI.view.MyItemDecoration
 import com.example.wan.UI.webview.WebViewActivity
 import com.example.wan.base.BaseFragment
 import com.example.wan.bean.Article
@@ -111,10 +112,8 @@ class MainFragment : BaseFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-//        initUI()
-
         initData()
+        dadaObserve()
 //        initAdapter()
 //        initSwipeToRefresh()
     }
@@ -123,6 +122,7 @@ class MainFragment : BaseFragment(), KodeinAware {
         recycle_main.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = homeAdapter
+            addItemDecoration(MyItemDecoration())
         }
         bannerRecycleView.run {
             layoutManager = linearLayoutManager
@@ -160,8 +160,6 @@ class MainFragment : BaseFragment(), KodeinAware {
                 startSwitchJob()
             }
         })
-        dadaObserve()
-
     }
 
     private fun dadaObserve() {
@@ -229,6 +227,7 @@ class MainFragment : BaseFragment(), KodeinAware {
 
     /**
      * 添加首页数据
+     * @param articleList List<Article>
      */
     fun addHomeData(articleList: List<Article>) {
         // 如果为空的话，就直接 显示加载完毕
@@ -328,6 +327,7 @@ class MainFragment : BaseFragment(), KodeinAware {
 
     /**
      * 获得Banner切换job
+     * @return Job
      */
     private fun getBannerSwitchJob() = GlobalScope.launch {
         repeat(Int.MAX_VALUE) {

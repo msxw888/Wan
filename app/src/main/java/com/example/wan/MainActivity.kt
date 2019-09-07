@@ -56,7 +56,7 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     private var mainFragment: MainFragment? = null
 
-    private lateinit var navigationname:TextView
+    private lateinit var navigationname: TextView
 
 
     /**
@@ -80,6 +80,8 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory)
+            .get(AccountViewModel::class.java)
         //设置Toolbar标题
         setToolBar(toolbar_main,getString(R.string.app_name))
 
@@ -108,6 +110,7 @@ class MainActivity : BaseActivity(), KodeinAware {
         bottomNavigation?.setupWithNavController(navController)
 //        setupActionBarWithNavController(this,navController)
 
+        dadaObserve()
         initNavigation()
         initDrawerLayout()
 
@@ -120,8 +123,13 @@ class MainActivity : BaseActivity(), KodeinAware {
 
     override fun onResume() {
         super.onResume()
-        accountViewModel = ViewModelProviders.of(this,accountViewModelFactory).get(AccountViewModel::class.java)
-        dadaObserve()
+        /**
+         * 其他页面login之后可以更新
+         */
+        val mTvName :TextView= nav_view.getHeaderView(0).findViewById(R.id.mTvName)
+        mTvName.let {
+            it.text = user
+        }
     }
 
     private fun dadaObserve() {
@@ -195,13 +203,20 @@ class MainActivity : BaseActivity(), KodeinAware {
         when(requestCode){
             Constant.MAIN_REQUEST_CODE -> {
                 if (resultCode == RESULT_OK) {
-                    navigationname.text = data?.getStringExtra(Constant.CONTENT_TITLE_KEY)
+//                    val navigation :TextView = nav_view.getHeaderView(0).findViewById(R.id.mTvName)
+////                    navigationname.text = data?.getStringExtra(Constant.CONTENT_TITLE_KEY)
+//                    navigation.run {
+//                        text = data?.getStringExtra(Constant.CONTENT_TITLE_KEY)
+//                    }
+                    mTvName.text = data?.getStringExtra(Constant.CONTENT_TITLE_KEY)
                 }
                 mainFragment?.refreshData()
             }
             Constant.MAIN_LIKE_REQUEST_CODE -> mainFragment?.refreshData()
         }
     }
+
+
 
     override fun onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
