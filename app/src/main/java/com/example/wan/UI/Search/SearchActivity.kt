@@ -129,9 +129,10 @@ class SearchActivity : BaseActivity(), KodeinAware {
         searchView = menu?.findItem(R.id.menuSearch)?.actionView as SearchView
         // init SearchView
         searchView?.init(1920, false, onQueryTextListener = onQueryTextListener)
-        searchKey?.let {
-            searchView?.setQuery(it, true)
-        }
+//        searchKey?.let {
+//            //是立即提交关键字查询用的。本身的string就是null，提不提交没区别，去掉
+//            searchView?.setQuery(it, true)
+//        }
         return super.onCreateOptionsMenu(menu)
     }
 

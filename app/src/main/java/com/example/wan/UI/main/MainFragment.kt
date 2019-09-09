@@ -22,7 +22,6 @@ import com.example.wan.UI.main.adapter.HomeAdapter
 import com.example.wan.UI.main.vm.MainViewModel
 import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.UI.view.HorizontalRecyclerView
-import com.example.wan.UI.view.MyItemDecoration
 import com.example.wan.UI.webview.WebViewActivity
 import com.example.wan.base.BaseFragment
 import com.example.wan.bean.Article
@@ -58,6 +57,7 @@ class MainFragment : BaseFragment(), KodeinAware {
 
     /**
      * LinearLayoutManager
+     * 设置recycleview横向
      */
     private val linearLayoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
@@ -122,9 +122,9 @@ class MainFragment : BaseFragment(), KodeinAware {
         recycle_main.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = homeAdapter
-            addItemDecoration(MyItemDecoration())
         }
         bannerRecycleView.run {
+            //在layoutmanger设置recycleview横向
             layoutManager = linearLayoutManager
             adapter = bannerAdapter
             bannerPagerSnap.attachToRecyclerView(this)

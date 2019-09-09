@@ -140,11 +140,12 @@ class LikeFragment : BaseFragment(), KodeinAware {
      * 条目点击监听器
      */
     private val monItemClickListener = BaseQuickAdapter.OnItemClickListener { _, _, position ->
-        if (likedatas.isNotEmpty()) {
+            val likearticle = madapter.getItem(position)
+        likearticle?.let {
             Intent(activity, WebViewActivity::class.java).run {
-                putExtra(Constant.CONTENT_URL_KEY, likedatas[position].link)
-                putExtra(Constant.CONTENT_ID_KEY, likedatas[position].id)
-                putExtra(Constant.CONTENT_TITLE_KEY, likedatas[position].title)
+                putExtra(Constant.CONTENT_URL_KEY, it.link)
+                putExtra(Constant.CONTENT_ID_KEY, it.id)
+                putExtra(Constant.CONTENT_TITLE_KEY, it.title)
                 startActivity(this)
             }
         }
