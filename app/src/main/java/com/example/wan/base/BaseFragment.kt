@@ -14,7 +14,10 @@ abstract class BaseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("onViewCreated",javaClass.simpleName)
         initView()
+
     }
+
+    open fun networkError() {}
 
     abstract fun initView()
 
@@ -26,7 +29,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        networkError()
     }
 
     override fun onDetach() {

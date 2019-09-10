@@ -169,6 +169,10 @@ class MainFragment : BaseFragment(), KodeinAware {
         accountViewModel.mRequestCollectData.observe(this, Observer {
             activity?.toast("取消收藏成功")
         })
+        viewModel.netstate.observe(this, Observer {
+            activity?.toast("网络不好，刷新重试")
+            swipe_refresh.isRefreshing = false
+        })
     }
 
     override fun onDestroyView() {

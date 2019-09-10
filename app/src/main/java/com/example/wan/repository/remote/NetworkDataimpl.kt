@@ -23,11 +23,12 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
     /**
      * 网络获取homelist
      */
-    override fun fetchhomelist(page: Int) {
+    override fun fetchhomelist(page: Int,netstate:MutableLiveData<Boolean>) {
         try {
             network.getapi().getHomeList(page).enqueue(object: Callback<BaseResponse<HomeListResponse>?> {
                 override fun onFailure(call: Call<BaseResponse<HomeListResponse>?>, t: Throwable) {
                     Log.e(">>>>>>>>>","请求失败")
+                    netstate.postValue(false)
                 }
 
                 override fun onResponse(call: Call<BaseResponse<HomeListResponse>?>, response: Response<BaseResponse<HomeListResponse>?>) {
@@ -106,11 +107,16 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
         }
     }
 
-    override fun getCollectResponse(page: Int, data: MutableLiveData<BaseResponse<CollectRsp>>) {
+    override fun getCollectResponse(
+        page: Int,
+        data: MutableLiveData<BaseResponse<CollectRsp>>,
+        netstate: MutableLiveData<Boolean>
+    ) {
         try {
             network.getapi().getLikeList(page).enqueue(object: Callback<BaseResponse<CollectRsp>?> {
                 override fun onFailure(call: Call<BaseResponse<CollectRsp>?>, t: Throwable) {
                     Log.e("like>>>>>>>>>","请求失败")
+                    netstate.postValue(false)
                 }
 
                 override fun onResponse(

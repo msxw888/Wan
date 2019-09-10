@@ -170,10 +170,10 @@ class SearchActivity : BaseActivity(), KodeinAware {
         // false open
         isIconified = sIconified
         // not close
-        if (!isClose) {
+//        if (!isClose) {
             // open
             onActionViewExpanded()
-        }
+//        }
         // search listener
         setOnQueryTextListener(onQueryTextListener)
     }

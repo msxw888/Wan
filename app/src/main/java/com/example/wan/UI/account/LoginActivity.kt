@@ -27,7 +27,7 @@ class LoginActivity : BaseActivity() ,View.OnClickListener,KodeinAware{
 
     override fun initView() {
         super.initView()
-
+//        Log.e("Login",intent.)
         mViewModel = ViewModelProviders.of(this,viewModelFactory).get(AccountViewModel::class.java)
 
         mBtnLogin.setOnClickListener(this)
@@ -65,5 +65,11 @@ class LoginActivity : BaseActivity() ,View.OnClickListener,KodeinAware{
                 }
             }
         }
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

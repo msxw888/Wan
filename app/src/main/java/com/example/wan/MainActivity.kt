@@ -127,8 +127,10 @@ class MainActivity : BaseActivity(), KodeinAware {
          * 其他页面login之后可以更新
          */
         val mTvName :TextView= nav_view.getHeaderView(0).findViewById(R.id.mTvName)
-        mTvName.let {
-            it.text = user
+        if (UserContext.instance.isLogin) {
+            mTvName.let {
+                it.text = user
+            }
         }
     }
 

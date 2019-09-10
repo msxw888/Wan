@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.example.wan.R
@@ -37,6 +36,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     companion object {
         fun newInstance() = LikeFragment()
+
     }
 
     private lateinit var viewModel: LikeViewModel
@@ -50,6 +50,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
     }
 
     private var page = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,16 +67,19 @@ class LikeFragment : BaseFragment(), KodeinAware {
             layoutManager = LinearLayoutManager(activity)
             adapter = madapter
         }
+        if (recycle_like.adapter==null){
+            madapter.bindToRecyclerView(recycle_like)
+        }
         madapter.run {
-            bindToRecyclerView(recycle_like)
             setEnableLoadMore(false)
             onItemClickListener = monItemClickListener
             onItemChildClickListener = this@LikeFragment.onItemChildClickListener
             setOnLoadMoreListener({
                 viewModel.getCollectList(++page)
             }, recycle_like)
-//            setEmptyView(R.layout.fragment_home_empty)
+            setEmptyView(R.layout.fragment_home_empty)
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,6 +90,7 @@ class LikeFragment : BaseFragment(), KodeinAware {
         // TODO: Use the ViewModel
         refreshData()
         dadaObserve()
+
     }
 
 
@@ -93,6 +98,13 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
     }
 
+    override fun networkError() {
+        super.networkError()
+        viewModel.netstate.observe(this, Observer {
+            swipe_refresh_like.isRefreshing = false
+            activity?.toast("网络不好，刷新重试")
+        })
+    }
 
     private fun dadaObserve() {
         viewModel.collectList.observe(this, Observer {
@@ -120,20 +132,26 @@ class LikeFragment : BaseFragment(), KodeinAware {
 
 
     private fun refreshData() {
-        swipe_refresh_like.isRefreshing = true
-        getcollectData()
+        if (UserContext.instance.isLogin){
+            getcollectData()
+        }else{
+            activity?.toast(getString(R.string.login_please_login))
+            swipe_refresh_like.isRefreshing=false
+        }
     }
 
     private fun getcollectData() {
         if (UserContext.instance.isLogin) {
+            swipe_refresh_like.isRefreshing = true
             page = 0
             viewModel.getCollectList()
         } else {
-            findNavController().navigate(R.id.mainFragment_dest)
+//            findNavController().navigate(R.id.mainFragment_dest)
             UserContext.instance.login(activity)
         }
 
     }
+
 
 
     /**
@@ -212,3 +230,5 @@ class LikeFragment : BaseFragment(), KodeinAware {
         madapter.loadMoreComplete()
     }
 }
+
+

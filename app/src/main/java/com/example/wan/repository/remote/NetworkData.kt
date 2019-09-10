@@ -14,7 +14,7 @@ import com.example.wan.bean.*
 interface NetworkData {
 //    val downloadhomelist :LiveData<BaseResponse>
 
-    fun fetchhomelist(page: Int)
+    fun fetchhomelist(page: Int,netstate:MutableLiveData<Boolean>)
 
     fun gethomedata():LiveData<BaseResponse<HomeListResponse>>
 
@@ -30,7 +30,11 @@ interface NetworkData {
     /**
      * 收藏列表
      */
-    fun getCollectResponse(page: Int,data: MutableLiveData<BaseResponse<CollectRsp>>)
+    fun getCollectResponse(
+        page: Int,
+        data: MutableLiveData<BaseResponse<CollectRsp>>,
+        netstate: MutableLiveData<Boolean>
+    )
 
     fun getTree(data: MutableLiveData<BaseResponse<List<TopTreeRsp>>>)
 
