@@ -45,6 +45,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:2.1.0-alpha04" // For Kotlin use navigation-fragment-ktx
     implementation "androidx.navigation:navigation-ui-ktx:2.1.0-alpha04" // For Kotlin use navigation-ui-ktx
 
+
+    //retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
@@ -75,5 +77,10 @@ dependencies {
 
     //CycleimageView
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+    //leakcanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
 }

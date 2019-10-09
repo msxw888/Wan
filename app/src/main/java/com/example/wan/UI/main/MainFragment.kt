@@ -97,7 +97,10 @@ class MainFragment : BaseFragment(), KodeinAware {
     ): View? {
         mainView ?: let {
             mainView = inflater.inflate(R.layout.main_fragment, container, false)
-            bannerRecycleView = LayoutInflater.from(activity).inflate(R.layout.banner, null) as HorizontalRecyclerView
+            bannerRecycleView = LayoutInflater.from(activity).inflate(
+                R.layout.banner,
+                null
+            ) as HorizontalRecyclerView
 //            View.inflate(activity,R.layout.banner,null) as HorizontalRecyclerView
         }
         return mainView
@@ -106,7 +109,8 @@ class MainFragment : BaseFragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        accountViewModel = ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel::class.java)
+        accountViewModel =
+            ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel::class.java)
         getdata()
     }
 
@@ -122,6 +126,7 @@ class MainFragment : BaseFragment(), KodeinAware {
         recycle_main.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = homeAdapter
+
         }
         bannerRecycleView.run {
             //在layoutmanger设置recycleview横向
@@ -253,7 +258,8 @@ class MainFragment : BaseFragment(), KodeinAware {
 
     private fun addBannerData(it: List<BannerResponse.Data>?) {
         it?.let { it1 ->
-            bannerAdapter.addData(it1)
+            if (bannerAdapter.data.isEmpty())
+                bannerAdapter.addData(it1)
         }
     }
 
@@ -289,29 +295,30 @@ class MainFragment : BaseFragment(), KodeinAware {
     /**
      *收藏按钮click监听
      */
-    private val onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
-        //        if (datas.isNotEmpty()) {
+    private val onItemChildClickListener =
+        BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+            //        if (datas.isNotEmpty()) {
 //            val data = datas[position]
-        val article = homeAdapter.getItem(position)
-        article?.let {
-            when (view.id) {
-                R.id.homeItemLike -> {
-                    UserContext.instance.collect(context, position, object : CollectListener {
-                        override fun collect(position: Int) {
-                            Log.d("LST", "position=$position")
-                            val collect = it.collect
+            val article = homeAdapter.getItem(position)
+            article?.let {
+                when (view.id) {
+                    R.id.homeItemLike -> {
+                        UserContext.instance.collect(context, position, object : CollectListener {
+                            override fun collect(position: Int) {
+                                Log.d("LST", "position=$position")
+                                val collect = it.collect
 
 
-                            // 发起 收藏/取消收藏  请求
+                                // 发起 收藏/取消收藏  请求
 //                            if (collect) viewModel.unCollect(data.id) else viewModel.collect(data.id)
-                            if (collect)
-                                accountViewModel.unCollect(it.id)
-                            else
-                                accountViewModel.Collect(it.id)
-                            it.collect = !collect
-                            homeAdapter.setData(position, it)
-                        }
-                    })
+                                if (collect)
+                                    accountViewModel.unCollect(it.id)
+                                else
+                                    accountViewModel.Collect(it.id)
+                                it.collect = !collect
+                                homeAdapter.setData(position, it)
+                            }
+                        })
 //                    if (UserContext.instance.isLogin) {
 //                        val collect = data.collect
 //                        data.collect = !collect
@@ -323,10 +330,10 @@ class MainFragment : BaseFragment(), KodeinAware {
 //                        }
 //                        activity?.toast(getString(R.string.login_please_login))
 //                    }
+                    }
                 }
             }
         }
-    }
 
 
     /**
@@ -369,6 +376,12 @@ class MainFragment : BaseFragment(), KodeinAware {
     companion object {
         fun newInstance() = MainFragment()
         private const val BANNER_TIME = 4000L
+    }
+
+    override fun onDestroy() {
+
+        bannerSwitchJob.run { cancelSwitchJob() }
+        super.onDestroy()
     }
 }
 

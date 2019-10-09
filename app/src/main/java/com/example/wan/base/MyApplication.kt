@@ -1,6 +1,7 @@
 package com.example.wan.base
 
 import android.app.Application
+import android.content.Context
 import com.example.wan.UI.Knowledgesys.vm.KnowViewModelFactory
 import com.example.wan.UI.Search.vm.SearchViewModelFactory
 import com.example.wan.UI.account.AccountRepository
@@ -11,6 +12,8 @@ import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.repository.Repository
 import com.example.wan.repository.remote.NetworkDataimpl
 import com.example.wan.repository.remote.RetrofitHelper
+import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -27,6 +30,7 @@ import org.kodein.di.generic.singleton
  *
  */
 class MyApplication : Application(),KodeinAware {
+    lateinit var refWatcher: RefWatcher
 
     override val kodein = Kodein.lazy {
         import(androidXModule(this@MyApplication))
@@ -47,5 +51,19 @@ class MyApplication : Application(),KodeinAware {
 //        Debug.startMethodTracing("wan_start")
         super.onCreate()
         Preference.setContext(applicationContext)
+
+        refWatcher = setupLeakCanary()
+    }
+
+    private fun setupLeakCanary(): RefWatcher {
+        return if (LeakCanary.isInAnalyzerProcess(this)) {
+            RefWatcher.DISABLED
+        } else LeakCanary.install(this)
+    }
+
+
+    fun getRefWatcher(context: Context): RefWatcher {
+        val leakApplication = context.applicationContext as MyApplication
+        return leakApplication.refWatcher
     }
 }

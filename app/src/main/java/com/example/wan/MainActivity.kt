@@ -228,6 +228,7 @@ class MainActivity : BaseActivity(), KodeinAware {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastTime < 1 * 1000) {
             super.onBackPressed()
+
             finish()
         } else {
             toast(getString(R.string.exit_app_tips))

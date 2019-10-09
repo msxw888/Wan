@@ -30,6 +30,7 @@ abstract class BaseFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         networkError()
+        Log.d("onActivityCreated",javaClass.simpleName)
     }
 
     override fun onDetach() {

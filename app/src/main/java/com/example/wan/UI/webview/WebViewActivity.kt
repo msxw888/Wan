@@ -39,5 +39,9 @@ class WebViewActivity : BaseActivity() {
         setting.builtInZoomControls = true
     }
 
-    override fun onBackPressed() = finish()
+    override fun onBackPressed() {
+        mAgentWeb.clearWebCache()
+        mAgentWeb.destroy()
+        finish()
+    }
 }
