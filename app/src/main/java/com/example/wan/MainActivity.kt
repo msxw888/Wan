@@ -24,6 +24,7 @@ import com.example.wan.UI.main.vm.MainViewModelFactory
 import com.example.wan.base.BaseActivity
 import com.example.wan.base.Preference
 import com.example.wan.context.UserContext
+import io.flutter.embedding.android.FlutterActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_webview.*
 import kotlinx.android.synthetic.main.layout_content.*
@@ -170,6 +171,13 @@ class MainActivity : BaseActivity(), KodeinAware {
                         navController.navigate(R.id.mainFragment_dest)
                         toast("已退出登录")
                         true
+                }
+
+                R.id.nav_flutter ->{
+                    startActivity(
+                        FlutterActivity.createDefaultIntent(this)
+                    )
+                    true
                 }
                 else -> false
             }

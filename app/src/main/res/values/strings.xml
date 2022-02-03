@@ -6,6 +6,7 @@
     <string name="hot_title">Hot</string>
     <string name="mylike">我的收藏</string>
     <string name="about">关于作者</string>
+    <string name="flutter">flutter</string>
     <string name="settingg">设置</string>
     <string name="title_activity_test">testActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

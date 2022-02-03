@@ -9,6 +9,11 @@
             <!--android:title="@string/mylike"/>-->
 
     <item
+            android:id="@+id/nav_flutter"
+            android:icon="@drawable/page"
+            android:title="@string/flutter"/>
+
+    <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_action_about"
             android:title="@string/about"/>
