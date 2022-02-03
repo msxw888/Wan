@@ -4,6 +4,7 @@ import Constant
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -14,6 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import com.example.wan.State.LoginState
+import com.example.wan.UI.Search.SearchActivity
 import com.example.wan.UI.account.LoginActivity
 import com.example.wan.UI.account.vm.AccountViewModel
 import com.example.wan.UI.account.vm.AccountViewModelFactory
@@ -176,23 +178,24 @@ class MainActivity : BaseActivity(), KodeinAware {
         drawer.closeDrawers()
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-//        when (item?.itemId) {
-//            //将滑动菜单显示出来
-//            android.R.id.home -> {
-//                drawer.openDrawer(GravityCompat.START)
-//                return true
-//            }
-//            // 跳转到 搜索
-//            R.id.menuSearch -> {
-//                Intent(this, SearchActivity::class.java).run {
-//                    startActivity(this)
-//                }
-//                return true
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            //将滑动菜单显示出来
+            android.R.id.home -> {
+                drawer.openDrawer(GravityCompat.START)
+                return true
+            }
+            // 跳转到 搜索
+            R.id.menuSearch -> {
+                Intent(this, SearchActivity::class.java).run {
+                    startActivity(this)
+                }
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     /**
      * loginactivity登陆成功后刷新Drawlayout信息
