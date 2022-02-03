@@ -127,7 +127,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
                     response: Response<BaseResponse<CollectRsp>?>
                 ) {
                     if (response.body()?.errorCode !=0){
-                        Log.e("like>>>>>>>>>",response.body()?.errorMsg)
+                        Log.e("like>>>>>>>>>",response.body()?.errorMsg!!)
                         data.postValue(response.body())
                     }
                     else if (response.body()?.errorCode==0){
@@ -153,7 +153,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
                     response: Response<BaseResponse<List<TopTreeRsp>>?>
                 ) {
                     if (response.body()?.errorCode !=0){
-                        Log.e("typeERROR>>>>>>>>>",response.body()?.errorMsg)
+                        Log.e("typeERROR>>>>>>>>>",response.body()?.errorMsg!!)
                         data.postValue(response.body())
                     }
                     else if (response.body()?.errorCode==0){
@@ -177,7 +177,7 @@ class NetworkDataimpl(private val network : RetrofitHelper) : NetworkData {
                 response: Response<BaseResponse<TreeArticleRsp>?>
             ) {
                 if (response.body()?.errorCode !=0){
-                    Log.e("type>>>>>>>>>",response.body()?.errorMsg)
+                    Log.e("type>>>>>>>>>",response.body()?.errorMsg!!)
                     data.postValue(response.body())
                 }
                 else if (response.body()?.errorCode==0){

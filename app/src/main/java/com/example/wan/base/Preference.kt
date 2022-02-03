@@ -45,7 +45,7 @@ class Preference<T>(private val name: String, private val default: T) : ReadWrit
             is Boolean -> getBoolean(name, default)
             is Float -> getFloat(name, default)
             else -> throw IllegalArgumentException("This type can not be saved into Preferences")
-        }
+        }!!
         res as U
     }
 

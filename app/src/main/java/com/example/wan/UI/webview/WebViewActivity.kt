@@ -24,7 +24,7 @@ class WebViewActivity : BaseActivity() {
             setNavigationOnClickListener { finish() }
         }
         val link = intent.getStringExtra("url")
-        toolbar.title = intent.getStringExtra("title").toHtml()
+        toolbar.title = intent.getStringExtra("title")?.toHtml()
 
         mAgentWeb = AgentWeb.with(this)
                 // 传入 AgentWeb 父容器  mLlContent,  第二个参数是对应的 LinearLayout
