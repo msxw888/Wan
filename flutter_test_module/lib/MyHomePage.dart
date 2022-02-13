@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Widget> _getList() {
     List<Widget> list = [];
-    if (netData == null) {
+    if (netData == null || list.isNotEmpty) {
       return list;
     }
     ArticalData data = netData!.data;
