@@ -14,7 +14,7 @@ import com.example.wan.UI.account.AccountRepository
 class AccountViewModelFactory (private val repository: AccountRepository) : ViewModelProvider.NewInstanceFactory(){
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return AccountViewModel(repository) as T
     }
 }

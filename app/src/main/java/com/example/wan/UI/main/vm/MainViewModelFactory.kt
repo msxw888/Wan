@@ -14,7 +14,7 @@ import com.example.wan.repository.remote.NetworkDataimpl
 class MainViewModelFactory (private val repository: NetworkDataimpl) : ViewModelProvider.NewInstanceFactory(){
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MainViewModel(repository) as T
     }
 }
