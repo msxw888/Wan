@@ -49,8 +49,10 @@ dependencies {
     implementation "org.kodein.di:kodein-di-framework-android-x:5.2.0"
 
     //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.1" // For Kotlin use navigation-fragment-ktx
-    implementation "androidx.navigation:navigation-ui-ktx:2.4.1" // For Kotlin use navigation-ui-ktx
+    // Kotlin
+    def nav_version = "2.4.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 
     //retrofit2
