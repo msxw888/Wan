@@ -1,8 +1,8 @@
 include ':app', ':JPushExample(1484897)'
-//setBinding(new Binding([gradle: this]))
-//evaluate(new File(
-//  settingsDir,
-//  'flutter_test_module/android/include_flutter.groovy'
-//))
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+  settingsDir,
+  'flutter_test_module/.android/include_flutter.groovy'
+))
 
 include ':flutter_test_module'

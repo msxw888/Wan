@@ -11,3 +11,8 @@
 /build
 /captures
 .externalNativeBuild
+/app/release/
+/.idea/
+/gradle/wrapper/
+/gradlew
+/gradlew.bat
