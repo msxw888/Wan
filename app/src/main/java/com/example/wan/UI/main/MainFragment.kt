@@ -154,7 +154,7 @@ class MainFragment : BaseFragment(), KodeinAware {
     }
 
     fun initData() {
-        viewModel._homedata.observe(this, Observer { response ->
+        viewModel._homedata.observe(viewLifecycleOwner, Observer { response ->
             response.data.datas.let {
                 addHomeData(it)
             }
