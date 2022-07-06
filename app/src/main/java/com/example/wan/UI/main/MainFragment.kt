@@ -52,8 +52,13 @@ class MainFragment : BaseFragment(), KodeinAware {
     /**
      * Viewmodel
      */
-    private lateinit var viewModel: MainViewModel
-    private lateinit var accountViewModel: AccountViewModel
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(viewModelStore, viewModelFactory).get<MainViewModel>()
+    }
+
+    private val accountViewModel: AccountViewModel by lazy {
+        ViewModelProvider(this, accountViewModelFactory).get(AccountViewModel::class.java)
+    }
 
     /**
      * LinearLayoutManager
@@ -109,9 +114,6 @@ class MainFragment : BaseFragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(viewModelStore, viewModelFactory).get<MainViewModel>()
-        accountViewModel =
-            ViewModelProvider(this, accountViewModelFactory).get(AccountViewModel::class.java)
         getdata()
     }
 

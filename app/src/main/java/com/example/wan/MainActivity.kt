@@ -45,7 +45,7 @@ class MainActivity : BaseActivity(), KodeinAware {
     private val navController: NavController by lazy { Navigation.findNavController(this,R.id.nav_host_fragment) }
 
     override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
-    private val mainviewModelFactory: MainViewModelFactory by instance()
+//    private val mainviewModelFactory: MainViewModelFactory by instance()
     private val accountViewModelFactory: AccountViewModelFactory by instance()
 
 
