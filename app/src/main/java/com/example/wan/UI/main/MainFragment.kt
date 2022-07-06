@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -108,9 +108,10 @@ class MainFragment : BaseFragment(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+
+        viewModel = ViewModelProvider(viewModelStore, viewModelFactory).get<MainViewModel>()
         accountViewModel =
-            ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel::class.java)
+            ViewModelProvider(this, accountViewModelFactory).get(AccountViewModel::class.java)
         getdata()
     }
 
@@ -159,7 +160,7 @@ class MainFragment : BaseFragment(), KodeinAware {
                 addHomeData(it)
             }
         })
-        viewModel.bannerdata.observe(this, Observer {
+        viewModel.bannerdata.observe(viewLifecycleOwner, Observer {
             viewModel.bannerdata.value?.data.let {
                 addBannerData(it)
                 startSwitchJob()
@@ -168,13 +169,13 @@ class MainFragment : BaseFragment(), KodeinAware {
     }
 
     private fun dadaObserve() {
-        accountViewModel.mLikeData.observe(this, Observer {
+        accountViewModel.mLikeData.observe(viewLifecycleOwner, Observer {
             activity?.toast("收藏成功")
         })
-        accountViewModel.mRequestCollectData.observe(this, Observer {
+        accountViewModel.mRequestCollectData.observe(viewLifecycleOwner, Observer {
             activity?.toast("取消收藏成功")
         })
-        viewModel.netstate.observe(this, Observer {
+        viewModel.netstate.observe(viewLifecycleOwner, Observer {
             activity?.toast("网络不好，刷新重试")
             swipe_refresh.isRefreshing = false
         })
