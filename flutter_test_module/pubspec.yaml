@@ -22,6 +22,8 @@ environment:
 
 dependencies:
   dio: ^4.0.4
+  fluttertoast: ^8.0.9
+  
   flutter:
     sdk: flutter
 

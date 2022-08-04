@@ -46,3 +46,7 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+/gradle/wrapper/gradle-wrapper.jar
+/gradlew
+/gradlew.bat
+/pubspec.lock

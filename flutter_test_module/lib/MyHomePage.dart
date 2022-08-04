@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_module/bean/artical_entity.dart';
 import 'package:flutter_test_module/generated/json/base/json_convert_content.dart';
 import 'package:flutter_test_module/ui/ItemView.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -26,6 +27,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late ArticalEntity? netData = null;
+
+  @override
+  void initState() {
+    print("wjh");
+    getHttp();
+  }
+
+  void getHttp() async {
+    try {
+      var response =
+          await Dio().get('https://www.wanandroid.com/article/list/0/json');
+      print("wjh response");
+      setState(() {
+        // netData = json.decode(response.data.toString());
+        netData = JsonConvert.fromJsonAsT<ArticalEntity>(response.data);
+        print("wjh setState");
+        print(response);
+      });
+      // print(response);
+    } catch (e) {
+      print("wjh error");
+      print(e);
+    }
+  }
+
   List<Widget> _getList() {
     List<Widget> list = [];
     if (netData == null || list.isNotEmpty) {
@@ -36,6 +63,17 @@ class _MyHomePageState extends State<MyHomePage> {
     for (ArticalDataDatas value in dataList) {
       list.add(ListTile(
         title: Text(value.title),
+        onTap: () {
+          Fluttertoast.showToast(
+              msg: value.title,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          // print(value.title);
+        },
       ));
     }
     return list;
@@ -95,31 +133,5 @@ class _MyHomePageState extends State<MyHomePage> {
         //   child: const Icon(Icons.add),
         // ), // This trailing comma makes auto-formatting nicer for build methods.
         );
-  }
-
-  @override
-  void initState() {
-    print("wjh");
-    getHttp();
-  }
-
-  late ArticalEntity? netData = null;
-
-  void getHttp() async {
-    try {
-      var response =
-          await Dio().get('https://www.wanandroid.com/article/list/0/json');
-      print("wjh response");
-      setState(() {
-        // netData = json.decode(response.data.toString());
-        netData = JsonConvert.fromJsonAsT<ArticalEntity>(response.data);
-        print("wjh setState");
-        print(response);
-      });
-      // print(response);
-    } catch (e) {
-      print("wjh error");
-      print(e);
-    }
   }
 }
