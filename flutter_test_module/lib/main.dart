@@ -24,6 +24,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // routes: <String, WidgetBuilder> {
+      //   // 静态路由 可以理解为AndroidManifest
+      // },
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_module/bean/artical_entity.dart';
 import 'package:flutter_test_module/generated/json/base/json_convert_content.dart';
 import 'package:flutter_test_module/ui/ItemView.dart';
+import 'package:flutter_test_module/webview/WebViewExample.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -64,15 +65,22 @@ class _MyHomePageState extends State<MyHomePage> {
       list.add(ListTile(
         title: Text(value.title),
         onTap: () {
-          Fluttertoast.showToast(
-              msg: value.title,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          // Fluttertoast.showToast(
+          //     msg: value.title,
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     gravity: ToastGravity.CENTER,
+          //     timeInSecForIosWeb: 1,
+          //     backgroundColor: Colors.red,
+          //     textColor: Colors.white,
+          //     fontSize: 16.0);
           // print(value.title);
+          //导航到新路由
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return WebViewExample(title: value.title, url: value.link);
+            }),
+          );
         },
       ));
     }

@@ -23,6 +23,7 @@ environment:
 dependencies:
   dio: ^4.0.4
   fluttertoast: ^8.0.9
+  webview_flutter: ^3.0.4
   
   flutter:
     sdk: flutter
