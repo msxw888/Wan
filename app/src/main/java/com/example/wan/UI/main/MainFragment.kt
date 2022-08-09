@@ -53,11 +53,11 @@ class MainFragment : BaseFragment(), KodeinAware {
      * Viewmodel
      */
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(viewModelStore, viewModelFactory).get<MainViewModel>()
+        ViewModelProvider(viewModelStore, viewModelFactory).get()
     }
 
     private val accountViewModel: AccountViewModel by lazy {
-        ViewModelProvider(this, accountViewModelFactory).get(AccountViewModel::class.java)
+        ViewModelProvider(viewModelStore, accountViewModelFactory).get()
     }
 
     /**
