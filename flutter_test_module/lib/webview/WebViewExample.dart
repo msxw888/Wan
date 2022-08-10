@@ -40,6 +40,7 @@ class WebViewExampleState extends State<WebViewExample> {
         body: WebView(
             // initialUrl: 'https://flutter.dev',
             initialUrl: url.toString(),
+            javascriptMode: JavascriptMode.unrestricted,
             onProgress: (int progress) {
               print('WebView is loading (progress : $progress%)');
             }));
