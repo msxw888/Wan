@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_module/bean/artical_entity.dart';
 import 'package:flutter_test_module/generated/json/base/json_convert_content.dart';
+import 'package:flutter_test_module/page/pages.dart';
+import 'package:flutter_test_module/title/TitleBar.dart';
 import 'package:flutter_test_module/ui/ItemView.dart';
 import 'package:flutter_test_module/webview/WebViewExample.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,64 +30,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late ArticalEntity? netData = null;
+
+
+  int currentIndex = 0;
+
+  final pages = [const HomePage(), const MsgPage(), const CartPage(), const PersonPage()];
 
   @override
   void initState() {
     print("wjh");
-    getHttp();
+
   }
 
-  void getHttp() async {
-    try {
-      var response =
-          await Dio().get('https://www.wanandroid.com/article/list/0/json');
-      print("wjh response");
-      setState(() {
-        // netData = json.decode(response.data.toString());
-        netData = JsonConvert.fromJsonAsT<ArticalEntity>(response.data);
-        print("wjh setState");
-        print(response);
-      });
-      // print(response);
-    } catch (e) {
-      print("wjh error");
-      print(e);
-    }
-  }
-
-  List<Widget> _getList() {
-    List<Widget> list = [];
-    if (netData == null || list.isNotEmpty) {
-      return list;
-    }
-    ArticalData data = netData!.data;
-    List<ArticalDataDatas> dataList = data.datas;
-    for (ArticalDataDatas value in dataList) {
-      list.add(ListTile(
-        title: Text(value.title),
-        onTap: () {
-          // Fluttertoast.showToast(
-          //     msg: value.title,
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.CENTER,
-          //     timeInSecForIosWeb: 1,
-          //     backgroundColor: Colors.red,
-          //     textColor: Colors.white,
-          //     fontSize: 16.0);
-          // print(value.title);
-          //导航到新路由
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return WebViewExample(title: value.title, url: value.link);
-            }),
-          );
-        },
-      ));
-    }
-    return list;
-  }
+  final List<BottomNavigationBarItem> bottomNavItems = [
+    const BottomNavigationBarItem(
+      backgroundColor: Colors.blue,
+      icon: Icon(Icons.home),
+      label: "首页",
+    ),
+    const BottomNavigationBarItem(
+      backgroundColor: Colors.green,
+      icon: Icon(Icons.message),
+      label: "消息",
+    ),
+    const BottomNavigationBarItem(
+      backgroundColor: Colors.amber,
+      icon: Icon(Icons.shopping_cart),
+      label: "购物车",
+    ),
+    const BottomNavigationBarItem(
+      backgroundColor: Colors.red,
+      icon: Icon(Icons.person),
+      label: "个人中心",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -96,50 +74,32 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(
-              Icons.menu,
-              semanticLabel: "mennu",
-            ),
-            onPressed: () {
-              print('Menu button');
-            },
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.search,
-                semanticLabel: 'search',
-              ),
-              onPressed: () {
-                print('Search button');
-              },
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.tune,
-                semanticLabel: 'filter',
-              ),
-              onPressed: () {
-                print('Filter button');
-              },
-            ),
-          ],
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-        ),
-        body: Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: ListView(children: _getList()),
-        )
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: _incrementCounter,
-        //   tooltip: 'Increment',
-        //   child: const Icon(Icons.add),
-        // ), // This trailing comma makes auto-formatting nicer for build methods.
-        );
+      appBar: TitleBar(widget: widget),
+      body:  pages[currentIndex],
+      // floatingActionButton: FloatingActionButton(
+      // onPressed: _incrementCounter,
+      // tooltip: 'Increment',
+      // child: const Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: BottomNavigationBar(
+        items: bottomNavItems,
+        currentIndex: currentIndex,
+        type: BottomNavigationBarType.shifting,
+        onTap: (index) {
+          _changePage(index);
+        },
+      ),
+    );
+  }
+
+
+  /*切换页面*/
+  void _changePage(int index) {
+    /*如果点击的导航项不是当前项  切换 */
+    if (index != currentIndex) {
+      setState(() {
+        currentIndex = index;
+      });
+    }
   }
 }
