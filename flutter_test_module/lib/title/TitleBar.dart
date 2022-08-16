@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_module/MyHomePage.dart';
 
-class TitleBar extends AppBar {
+class TitleBar extends StatelessWidget implements PreferredSizeWidget{
   TitleBar({
     Key? key,
     required this.widget,
@@ -50,4 +50,8 @@ class TitleBar extends AppBar {
       title: Text(widget.title),
     );
   }
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
