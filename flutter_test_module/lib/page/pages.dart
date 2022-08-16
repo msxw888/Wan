@@ -43,7 +43,11 @@ class _HomePageState extends State<HomePage>{
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(children: _getList());
+    return Center(
+      // Center is a layout widget. It takes a single child and positions it
+      // in the middle of the parent.
+      child: ListView(children: _getList()),
+    );
   }
 
   void getHttp() async {
