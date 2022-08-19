@@ -88,11 +88,13 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         onHorizontalDragEnd: (DragEndDetails details) {
           print(details.primaryVelocity);
-          int index;
+          int index = 0;
           if (details.primaryVelocity! < 0) {
             index = currentIndex + 1;
-          } else {
+          } else if (details.primaryVelocity! > 0){
             index = currentIndex - 1;
+          } else {
+            return;
           }
           if (index < 0 || index >= pages.length) {
             return;
