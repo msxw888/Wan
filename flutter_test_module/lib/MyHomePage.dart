@@ -30,16 +30,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-
   int currentIndex = 0;
 
-  final pages = [const HomePage(), const MsgPage(), const CartPage(), const PersonPage()];
+  final pages = [
+    const HomePage(),
+    const MsgPage(),
+    const CartPage(),
+    const PersonPage()
+  ];
 
   @override
   void initState() {
     print("wjh");
-
   }
 
   final List<BottomNavigationBarItem> bottomNavItems = [
@@ -75,7 +77,30 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: TitleBar(widget: widget),
-      body:  pages[currentIndex],
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        child: Container(
+            child: pages[currentIndex],
+            width: double.infinity,
+            height: double.infinity),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          print(details);
+        },
+        onHorizontalDragEnd: (DragEndDetails details) {
+          print(details.primaryVelocity);
+          int index;
+          if (details.primaryVelocity! < 0) {
+            index = currentIndex + 1;
+          } else {
+            index = currentIndex - 1;
+          }
+          if (index < 0 || index > pages.length) {
+            return;
+          }
+          _changePage(index);
+          print(currentIndex);
+        },
+      ),
       // floatingActionButton: FloatingActionButton(
       // onPressed: _incrementCounter,
       // tooltip: 'Increment',
@@ -91,7 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 
   /*切换页面*/
   void _changePage(int index) {
