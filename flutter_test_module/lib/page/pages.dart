@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +30,8 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>{
-
+class _HomePageState extends State<HomePage> {
   late ArticalEntity? netData = null;
-
 
   @override
   void initState() {
@@ -53,7 +50,7 @@ class _HomePageState extends State<HomePage>{
   void getHttp() async {
     try {
       var response =
-      await Dio().get('https://www.wanandroid.com/article/list/0/json');
+          await Dio().get('https://www.wanandroid.com/article/list/0/json');
       print("wjh response");
       setState(() {
         // netData = json.decode(response.data.toString());
@@ -102,7 +99,6 @@ class _HomePageState extends State<HomePage>{
   }
 }
 
-
 class MsgPage extends StatelessWidget {
   const MsgPage({Key? key}) : super(key: key);
 
@@ -117,11 +113,15 @@ class MsgPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("MsgPage");
-    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(color: Colors.red, child: const Text('Hello!')),
+        Container(color: Colors.green, child: const Text('Goodbye!')),
+      ],
+    );
   }
 }
-
 
 class CartPage extends StatelessWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -135,11 +135,45 @@ class CartPage extends StatelessWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-
   @override
   Widget build(BuildContext context) {
-    return Text("CartPage");
-
+    return Column(
+      //测试Row对齐方式，排除Column默认居中对齐的干扰
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(" hello world "),
+            Text(" I am Jack "),
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(" hello world "),
+            Text(" I am Jack "),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          textDirection: TextDirection.rtl,
+          children: <Widget>[
+            Text(" hello world "),
+            Text(" I am Jack "),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          verticalDirection: VerticalDirection.up,
+          children: <Widget>[
+            Text(" hello world ", style: TextStyle(fontSize: 30.0),),
+            Text(" I am Jack "),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -158,6 +192,5 @@ class PersonPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text("PersonPage");
-
   }
 }

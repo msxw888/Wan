@@ -81,8 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         behavior: HitTestBehavior.translucent,
         child: Center(
           child: Container(
-            child: pages[currentIndex],
-            color: Colors.red,),
+            child: pages[currentIndex],),
         ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           print(details);
