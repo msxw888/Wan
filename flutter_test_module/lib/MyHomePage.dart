@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
           } else {
             index = currentIndex - 1;
           }
-          if (index < 0 || index > pages.length) {
+          if (index < 0 || index >= pages.length) {
             return;
           }
           _changePage(index);
