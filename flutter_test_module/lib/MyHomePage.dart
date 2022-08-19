@@ -79,10 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: TitleBar(widget: widget),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        child: Container(
+        child: Center(
+          child: Container(
             child: pages[currentIndex],
-            width: double.infinity,
-            height: double.infinity),
+            color: Colors.red,),
+        ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           print(details);
         },
