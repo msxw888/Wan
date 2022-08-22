@@ -113,11 +113,22 @@ class MsgPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        Container(color: Colors.red, child: const Text('Hello!')),
-        Container(color: Colors.green, child: const Text('Goodbye!')),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(color: Colors.red, child: const Text('Hello!')),
+            Container(color: Colors.green, child: const Text('Goodbye!')),
+          ],
+        ),
+        Container(
+          child: Wrap(
+            children: [
+              Text("xxx" * 100)
+            ],
+          ),
+        )
       ],
     );
   }
@@ -168,7 +179,10 @@ class CartPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           verticalDirection: VerticalDirection.up,
           children: <Widget>[
-            Text(" hello world ", style: TextStyle(fontSize: 30.0),),
+            Text(
+              " hello world ",
+              style: TextStyle(fontSize: 30.0),
+            ),
             Text(" I am Jack "),
           ],
         ),
