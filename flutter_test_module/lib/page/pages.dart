@@ -127,10 +127,21 @@ class MsgPage extends StatelessWidget {
           ],
         ),
         Wrap(
-          children: [
-            Text("xxx" * 100)
-          ],
-        )
+          children: [Text("xxx" * 100)],
+        ),
+        ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            child: Container(
+              width: 100,
+              height: 100,
+              color: Colors.lightBlue,
+            )),
+        ClipOval(
+            child: Container(
+              width: 100,
+              height: 100,
+              color: Colors.lightBlue,
+            )),
       ],
     );
   }
