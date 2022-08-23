@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_test_module/util/DeBugLog.dart';
 
 import '../bean/artical_entity.dart';
 import '../generated/json/base/json_convert_content.dart';
@@ -51,17 +53,19 @@ class _HomePageState extends State<HomePage> {
     try {
       var response =
           await Dio().get('https://www.wanandroid.com/article/list/0/json');
-      print("wjh response");
+      if (kDebugMode) {
+        DeBugLog.log("wjh response");
+      }
       setState(() {
         // netData = json.decode(response.data.toString());
         netData = JsonConvert.fromJsonAsT<ArticalEntity>(response.data);
-        print("wjh setState");
-        print(response);
+        DeBugLog.log("wjh setState");
+        DeBugLog.log(response);
       });
-      // print(response);
+      // DeBugLog.log(response);
     } catch (e) {
-      print("wjh error");
-      print(e);
+      DeBugLog.log("wjh error");
+      DeBugLog.log(e);
     }
   }
 
@@ -84,7 +88,7 @@ class _HomePageState extends State<HomePage> {
           //     backgroundColor: Colors.red,
           //     textColor: Colors.white,
           //     fontSize: 16.0);
-          // print(value.title);
+          // DeBugLog.log(value.title);
           //导航到新路由
           Navigator.push(
             context,
@@ -122,12 +126,10 @@ class MsgPage extends StatelessWidget {
             Container(color: Colors.green, child: const Text('Goodbye!')),
           ],
         ),
-        Container(
-          child: Wrap(
-            children: [
-              Text("xxx" * 100)
-            ],
-          ),
+        Wrap(
+          children: [
+            Text("xxx" * 100)
+          ],
         )
       ],
     );

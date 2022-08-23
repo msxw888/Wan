@@ -8,6 +8,7 @@ import 'package:flutter_test_module/generated/json/base/json_convert_content.dar
 import 'package:flutter_test_module/page/pages.dart';
 import 'package:flutter_test_module/title/TitleBar.dart';
 import 'package:flutter_test_module/ui/ItemView.dart';
+import 'package:flutter_test_module/util/DeBugLog.dart';
 import 'package:flutter_test_module/webview/WebViewExample.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -41,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    print("wjh");
+    DeBugLog.log("wjh");
   }
 
   final List<BottomNavigationBarItem> bottomNavItems = [
