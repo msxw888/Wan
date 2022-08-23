@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'MyHomePage.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+
+  debugPaintSizeEnabled = true;
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

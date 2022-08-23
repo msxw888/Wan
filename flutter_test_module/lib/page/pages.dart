@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     return Center(
       // Center is a layout widget. It takes a single child and positions it
       // in the middle of the parent.
-      child: ListView(children: _getList()),
+      child: ListView(children: _getList(), cacheExtent: 10,),
     );
   }
 
