@@ -27,6 +27,18 @@ class _GesNumbersPageState extends State<GesNumbersPage> {
       child: Column(
         // mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Container(
+            width: 300,
+            padding: EdgeInsets.only(bottom: 30),
+            child: TextField(
+              controller: _gesController,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: "猜数字，不输入默认为1",
+              ),
+            ),
+          ),
+
           Text("猜数成功率" + _getResRate()),
           Text("历史数据"),
           Container(
@@ -51,7 +63,7 @@ class _GesNumbersPageState extends State<GesNumbersPage> {
             height: 1,
             color: Colors.lightBlue,
           ),
-          Text(num.toString()),
+          Text("随机数  ： " + num.toString(), style: TextStyle(color: Colors.red),),
           ElevatedButton(
             child: const Text("随机数字"),
             onPressed: () {
@@ -73,16 +85,6 @@ class _GesNumbersPageState extends State<GesNumbersPage> {
                 }
               });
             },
-          ),
-          Container(
-            width: 300,
-            child: TextField(
-              controller: _gesController,
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText: "猜数字，不输入默认为1",
-              ),
-            ),
           ),
         ],
       ),
