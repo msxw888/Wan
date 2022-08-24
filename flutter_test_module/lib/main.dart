@@ -5,7 +5,7 @@ import 'MyHomePage.dart';
 
 void main() {
 
-  debugPaintSizeEnabled = true;
+  // debugPaintSizeEnabled = false;
   runApp(const MyApp());
 }
 

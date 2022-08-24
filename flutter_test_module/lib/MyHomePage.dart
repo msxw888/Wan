@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_module/bean/artical_entity.dart';
 import 'package:flutter_test_module/generated/json/base/json_convert_content.dart';
+import 'package:flutter_test_module/gesNum/GesNumbers.dart';
 import 'package:flutter_test_module/page/pages.dart';
 import 'package:flutter_test_module/title/TitleBar.dart';
 import 'package:flutter_test_module/ui/ItemView.dart';
@@ -37,7 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
     const HomePage(),
     const MsgPage(),
     const CartPage(),
-    const PersonPage()
+    const PersonPage(),
+    const GesNumbersPage(),
   ];
 
   @override
@@ -65,6 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.red,
       icon: Icon(Icons.person),
       label: "个人中心",
+    ),
+    const BottomNavigationBarItem(
+      backgroundColor: Colors.red,
+      icon: Icon(Icons.animation),
+      label: "猜数字",
     ),
   ];
 
